@@ -1,11 +1,1 @@
-import React from 'react';
-
-// Purpose: Authenticate users
-export default function SignupPage() {
-  return (
-    <div>
-      <h1>Signup Page</h1>
-      {/* Add your signup form components here */}
-    </div>
-  );
-}
+// This file is intentionally left blank. It has been removed to resolve a routing conflict.
