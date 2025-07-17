@@ -1,0 +1,96 @@
+[debug] [2025-07-17T17:26:59.487Z] ----------------------------------------------------------------------
+[debug] [2025-07-17T17:26:59.495Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Admin\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2025-07-17T17:26:59.496Z] CLI Version:   14.11.0
+[debug] [2025-07-17T17:26:59.496Z] Platform:      win32
+[debug] [2025-07-17T17:26:59.496Z] Node Version:  v22.17.0
+[debug] [2025-07-17T17:26:59.497Z] Time:          Thu Jul 17 2025 13:26:59 GMT-0400 (Eastern Daylight Time)
+[debug] [2025-07-17T17:26:59.497Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-17T17:26:59.892Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-17T17:26:59.893Z] > authorizing via signed-in user (terri.bertin57@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\Admin
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-07-17T17:44:34.401Z] Using project from CLI flag: justice-bot-16f26
+[debug] [2025-07-17T17:44:34.405Z] Checked if tokens are valid: false, expires at: 1752736250214
+[debug] [2025-07-17T17:44:34.405Z] Checked if tokens are valid: false, expires at: 1752736250214
+[debug] [2025-07-17T17:44:34.406Z] > refreshing access token with scopes: []
+[debug] [2025-07-17T17:44:34.410Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-07-17T17:44:34.410Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-17T17:44:34.847Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-07-17T17:44:34.848Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-17T17:44:34.873Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/justice-bot-16f26 [none]
+[debug] [2025-07-17T17:44:36.155Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/justice-bot-16f26 200
+[debug] [2025-07-17T17:44:36.156Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/justice-bot-16f26 {"projectId":"justice-bot-16f26","projectNumber":"365206120273","displayName":"Justice-bot","name":"projects/justice-bot-16f26","resources":{"hostingSite":"justice-bot-16f26","realtimeDatabaseInstance":"justice-bot-16f26-default-rtdb"},"state":"ACTIVE","etag":"1_3f800354-a0d2-4dc9-bfcf-5d965cc1eaf6"}
+[info] i  Using project justice-bot-16f26 (Justice-bot) 
+[info] 
+=== Functions Setup
+[debug] [2025-07-17T17:44:36.182Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-17T17:44:36.182Z] > authorizing via signed-in user (terri.bertin57@gmail.com)
+[debug] [2025-07-17T17:44:36.183Z] [iam] checking project justice-bot-16f26 for permissions ["firebase.projects.get"]
+[debug] [2025-07-17T17:44:36.184Z] Checked if tokens are valid: true, expires at: 1752777873849
+[debug] [2025-07-17T17:44:36.184Z] Checked if tokens are valid: true, expires at: 1752777873849
+[debug] [2025-07-17T17:44:36.184Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/justice-bot-16f26:testIamPermissions [none]
+[debug] [2025-07-17T17:44:36.185Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/justice-bot-16f26:testIamPermissions x-goog-quota-user=projects/justice-bot-16f26
+[debug] [2025-07-17T17:44:36.185Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/justice-bot-16f26:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-07-17T17:44:36.563Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/justice-bot-16f26:testIamPermissions 200
+[debug] [2025-07-17T17:44:36.564Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/justice-bot-16f26:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-07-17T17:44:36.567Z] Checked if tokens are valid: true, expires at: 1752777873849
+[debug] [2025-07-17T17:44:36.567Z] Checked if tokens are valid: true, expires at: 1752777873849
+[debug] [2025-07-17T17:44:36.568Z] Checked if tokens are valid: true, expires at: 1752777873849
+[debug] [2025-07-17T17:44:36.568Z] Checked if tokens are valid: true, expires at: 1752777873849
+[debug] [2025-07-17T17:44:36.569Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-07-17T17:44:36.569Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/justice-bot-16f26
+[debug] [2025-07-17T17:44:36.573Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/runtimeconfig.googleapis.com [none]
+[debug] [2025-07-17T17:44:36.573Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/justice-bot-16f26
+[debug] [2025-07-17T17:44:37.185Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/cloudfunctions.googleapis.com 200
+[debug] [2025-07-17T17:44:37.185Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2025-07-17T17:44:37.186Z] Checked if tokens are valid: true, expires at: 1752777873849
+[debug] [2025-07-17T17:44:37.187Z] Checked if tokens are valid: true, expires at: 1752777873849
+[debug] [2025-07-17T17:44:37.187Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/cloudfunctions.googleapis.com:enable [none]
+[debug] [2025-07-17T17:44:37.187Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/cloudfunctions.googleapis.com:enable x-goog-quota-user=projects/justice-bot-16f26
+[debug] [2025-07-17T17:44:37.485Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/runtimeconfig.googleapis.com 200
+[debug] [2025-07-17T17:44:37.485Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2025-07-17T17:44:37.570Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/cloudfunctions.googleapis.com:enable 200
+[debug] [2025-07-17T17:44:37.570Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/justice-bot-16f26/services/cloudfunctions.googleapis.com:enable [omitted]
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[debug] [2025-07-17T17:45:13.226Z] ExitPromptError: User force closed the prompt with SIGINT
+    at Interface.sigint (C:\Users\Admin\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\@inquirer\core\dist\commonjs\lib\create-prompt.js:101:37)
+    at Interface.emit (node:events:518:28)
+    at Interface.emit (node:domain:489:12)
+    at [_ttyWrite] [as _ttyWrite] (node:internal/readline/interface:1132:18)
+    at ReadStream.onkeypress (node:internal/readline/interface:271:20)
+    at ReadStream.emit (node:events:530:35)
+    at ReadStream.emit (node:domain:489:12)
+    at emitKeys (node:internal/readline/utils:370:14)
+    at emitKeys.next (<anonymous>)
+    at ReadStream.onData (node:internal/readline/emitKeypressEvents:64:36)
+[error] 
+[error] Error: An unexpected error has occurred.
