@@ -1,1 +1,1 @@
-web: gunicorn Justice-bot-smartdisputefinal.app:app
+web: gunicorn Justice-bot-smartdisputefinal.app:create_app()
