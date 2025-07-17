@@ -24,7 +24,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
-import { Loader2, LogIn } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { Icons } from '@/components/icons';
@@ -69,13 +69,13 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-     if (window.grecaptcha && window.grecaptcha.enterprise) {
+     if ((window as any).grecaptcha && (window as any).grecaptcha.enterprise) {
       try {
-        window.grecaptcha.enterprise.ready(async () => {
+        (window as any).grecaptcha.enterprise.ready(async () => {
           try {
             const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
             if (!siteKey) throw new Error("reCAPTCHA site key not found.");
-            const token = await window.grecaptcha.enterprise.execute(siteKey, {action: 'LOGIN'});
+            const token = await (window as any).grecaptcha.enterprise.execute(siteKey, {action: 'LOGIN'});
             if (token) {
               await signInWithGoogle(token);
             }

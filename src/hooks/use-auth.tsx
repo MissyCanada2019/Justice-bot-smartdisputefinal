@@ -18,6 +18,12 @@ interface AuthContextType {
   logout: () => Promise<void>;
 }
 
+declare global {
+    interface Window {
+        grecaptcha: any;
+    }
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {

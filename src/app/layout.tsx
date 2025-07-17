@@ -13,6 +13,12 @@ export const metadata: Metadata = {
     'AI-powered legal analysis, document summaries, and argument generation based on Canadian law. Specializing in Family, Criminal, and LTB matters with a focus on the Charter of Rights and Freedoms.',
 };
 
+declare global {
+    interface Window {
+        grecaptcha: any;
+    }
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
