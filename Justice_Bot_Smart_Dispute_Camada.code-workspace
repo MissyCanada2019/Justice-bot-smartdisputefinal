@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "../Documents/Justice_Bot_Smart_Dispute_Camada"
+		},
+		{
+			"path": "../Desktop/Smart_Dispute_Canada_Full_App_Package"
+		},
+		{
+			"path": "../Desktop/Smart_Dispute_Canada_Full_App_Complete"
+		},
+		{
+			"name": "firebase-justice-bot",
+			"path": "../../justice-bot.com/firebase-justice-bot"
+		}
+	],
+	"settings": {}
+}
