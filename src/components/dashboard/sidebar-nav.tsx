@@ -19,13 +19,6 @@ import {
   ShieldCheck,
   FileText,
   CreditCard,
-  CalendarClock,
-  FilePlus2,
-  FileSearch,
-  MapPin,
-  Library,
-  MessageCircle,
-  FolderOpen,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -34,50 +27,11 @@ import { Icons } from '../icons';
 
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
-  {
-    href: '/dashboard/ask-justicebot',
-    label: 'Ask JusticeBot',
-    icon: MessageCircle,
-  },
-  {
-    href: '/dashboard/submit-dispute',
-    label: 'Submit Dispute',
-    icon: FileText,
-  },
-  {
-    href: '/dashboard/evidence-locker',
-    label: 'Evidence Locker',
-    icon: FolderOpen,
-  },
-  {
-    href: '/dashboard/timeline',
-    label: 'Legal Timeline',
-    icon: CalendarClock,
-  },
-  {
-    href: '/dashboard/generate-form',
-    label: 'Generate Form',
-    icon: FilePlus2,
-  },
-  {
-    href: '/dashboard/court-locator',
-    label: 'Court Locator',
-    icon: MapPin,
-  },
-  {
-    href: '/dashboard/precedent-finder',
-    label: 'Precedent Finder',
-    icon: Library,
-  },
+  { href: '/dashboard/submit-dispute', label: 'Submit Dispute', icon: FileText },
   {
     href: '/dashboard/charter-analysis',
     label: 'Charter Analysis',
     icon: Gavel,
-  },
-  {
-    href: '/dashboard/document-explainer',
-    label: 'Document Explainer',
-    icon: FileSearch,
   },
   { href: '/dashboard/family-law', label: 'Family Law', icon: ShieldCheck },
   { href: '/dashboard/criminal-law', label: 'Criminal Law', icon: Scale },
