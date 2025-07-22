@@ -1,0 +1,54 @@
+type User @table {
+  displayName: String!
+  createdAt: Timestamp!
+  email: String
+  province: String
+}
+
+type LegalTopic @table {
+  name: String!
+  description: String
+}
+
+type LegalGuide @table {
+  title: String!
+  content: String!
+  createdAt: Timestamp!
+  provinceSpecific: Boolean
+  updatedAt: Timestamp
+  topic: LegalTopic
+}
+
+type DocumentTemplate @table {
+  name: String!
+  createdAt: Timestamp!
+  description: String
+  content: String
+  updatedAt: Timestamp
+  topic: LegalTopic
+}
+
+type CaseLog @table {
+  caseName: String!
+  createdAt: Timestamp!
+  description: String
+  status: String
+  updatedAt: Timestamp
+  user: User!
+  topic: LegalTopic!
+}
+
+type CaseEvent @table {
+  date: Date!
+  eventType: String!
+  createdAt: Timestamp!
+  notes: String
+  caseLog: CaseLog!
+}
+
+type SavedContent @table {
+  createdAt: Timestamp!
+  user: User!
+  legalGuide: LegalGuide
+  documentTemplate: DocumentTemplate
+}
