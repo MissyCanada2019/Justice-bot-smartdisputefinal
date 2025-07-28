@@ -20,7 +20,7 @@ export const saveCaseAssessment = async (userId: string, assessment: AssessDispu
     }
 };
 
-export const getLatestCaseAssessment = async (userId: string): Promise<AssessDisputeMeritOutput | null> => {
+export const getLatestCaseAssessment = async (userId: string): Promise<CaseDocument | null> => {
     try {
         const q = query(
             collection(db, 'cases'),
@@ -37,10 +37,9 @@ export const getLatestCaseAssessment = async (userId: string): Promise<AssessDis
 
         const latestCaseDoc = querySnapshot.docs[0].data() as CaseDocument;
         
-        // We only need the assessment data, not the userId or createdAt timestamp
-        const { userId: uid, createdAt, ...assessmentData } = latestCaseDoc;
+        // Return the full document, as the AI flow may need all context.
+        return latestCaseDoc;
 
-        return assessmentData;
     } catch (error) {
         console.error("Error fetching latest case assessment from Firestore: ", error);
         throw new Error("Could not load your latest case data. Please try again.");
