@@ -26,7 +26,7 @@ export const sendEmail = async (options: MailOptions) => {
 
   const msg = {
     ...options,
-    from: 'support@justice-bot.com', // Use a verified sender email
+    from: 'admin@justice-bot.com', // Use a verified sender email
   };
 
   try {

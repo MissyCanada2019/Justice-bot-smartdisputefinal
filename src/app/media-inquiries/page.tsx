@@ -32,8 +32,8 @@ export default function MediaInquiriesPage() {
                     <Mail className="h-6 w-6 text-primary"/>
                     <div>
                         <h3 className="font-semibold text-foreground">Email</h3>
-                        <a href="mailto:teresa@justice-bot.com" className="text-primary hover:underline">
-                            teresa@justice-bot.com
+                        <a href="mailto:admin@justice-bot.com" className="text-primary hover:underline">
+                            admin@justice-bot.com
                         </a>
                     </div>
                  </div>
