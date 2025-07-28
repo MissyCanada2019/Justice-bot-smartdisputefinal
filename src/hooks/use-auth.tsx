@@ -7,6 +7,7 @@ import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { useToast } from './use-toast';
 import { verifyRecaptchaToken } from '@/ai/flows/verify-recaptcha';
+import { sendWelcomeEmail } from '@/lib/emailService';
 
 interface AuthContextType {
   user: User | null;
@@ -76,6 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (additionalUserInfo?.isNewUser) {
+        await sendWelcomeEmail(result.user.email!, result.user.displayName);
         router.push('/dashboard/welcome');
       } else {
         router.push('/dashboard');
@@ -106,6 +108,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const displayName = email.split('@')[0];
         await updateProfile(userCredential.user, { displayName });
         
+        await sendWelcomeEmail(email, displayName);
+
         toast({
             title: 'Account Created!',
             description: 'Welcome! Redirecting you to the dashboard.',
