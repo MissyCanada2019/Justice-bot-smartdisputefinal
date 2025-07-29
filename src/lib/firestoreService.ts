@@ -5,12 +5,26 @@ import { AssessDisputeMeritOutput } from '@/ai/flows/assess-dispute-merit';
 export interface CaseDocument extends AssessDisputeMeritOutput {
     userId: string;
     createdAt: Timestamp;
+    caseName?: string;
+    province?: string;
+    userLocation?: string;
+    userEmail?: string;
 }
 
-export const saveCaseAssessment = async (userId: string, assessment: AssessDisputeMeritOutput): Promise<void> => {
+export const saveCaseAssessment = async (
+    userId: string,
+    assessment: AssessDisputeMeritOutput,
+    additionalData?: {
+        caseName?: string;
+        province?: string;
+        userLocation?: string;
+        userEmail?: string;
+    }
+): Promise<void> => {
     try {
         await addDoc(collection(db, 'cases'), {
             ...assessment,
+            ...additionalData,
             userId,
             createdAt: Timestamp.now(),
         });

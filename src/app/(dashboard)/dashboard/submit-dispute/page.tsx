@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FileText, Loader2, UploadCloud, BarChart, FileSignature, Milestone, CalendarClock, FilePlus2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
@@ -41,11 +42,33 @@ const formSchema = z.object({
   disputeDetails: z.string().min(50, {
     message: 'Please provide at least 50 characters of detail.',
   }),
+  province: z.string().min(1, {
+    message: 'Please select your province.',
+  }),
+  userLocation: z.string().min(2, {
+    message: 'Please provide your city/location.',
+  }),
   evidence: z.custom<FileList>().optional(),
-  consent: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the terms to proceed." }),
+  consent: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms to proceed.",
   }),
 });
+
+const canadianProvinces = [
+  { value: 'alberta', label: 'Alberta' },
+  { value: 'british-columbia', label: 'British Columbia' },
+  { value: 'manitoba', label: 'Manitoba' },
+  { value: 'new-brunswick', label: 'New Brunswick' },
+  { value: 'newfoundland-labrador', label: 'Newfoundland and Labrador' },
+  { value: 'northwest-territories', label: 'Northwest Territories' },
+  { value: 'nova-scotia', label: 'Nova Scotia' },
+  { value: 'nunavut', label: 'Nunavut' },
+  { value: 'ontario', label: 'Ontario' },
+  { value: 'prince-edward-island', label: 'Prince Edward Island' },
+  { value: 'quebec', label: 'Quebec' },
+  { value: 'saskatchewan', label: 'Saskatchewan' },
+  { value: 'yukon', label: 'Yukon' },
+];
 
 export default function SubmitDisputePage() {
     const [loading, setLoading] = useState(false);
@@ -58,6 +81,8 @@ export default function SubmitDisputePage() {
         defaultValues: {
             caseName: '',
             disputeDetails: '',
+            province: '',
+            userLocation: '',
             consent: false,
         },
     });
@@ -106,9 +131,17 @@ export default function SubmitDisputePage() {
                 caseName: values.caseName,
                 disputeDetails: values.disputeDetails,
                 evidenceText: evidenceText,
+                province: values.province,
+                userEmail: user.email || undefined,
+                userLocation: values.userLocation,
             });
 
-            await saveCaseAssessment(user.uid, output);
+            await saveCaseAssessment(user.uid, output, {
+                caseName: values.caseName,
+                province: values.province,
+                userLocation: values.userLocation,
+                userEmail: user.email || undefined,
+            });
             setResult(output);
             
             toast({
@@ -187,6 +220,51 @@ export default function SubmitDisputePage() {
                                     </FormItem>
                                 )}
                             />
+                            <div className="grid gap-6 md:grid-cols-2">
+                                <FormField
+                                    control={form.control}
+                                    name="province"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Province/Territory</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={loading}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select your province" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {canadianProvinces.map((province) => (
+                                                        <SelectItem key={province.value} value={province.label}>
+                                                            {province.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormDescription>
+                                                This helps us provide province-specific legal analysis.
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="userLocation"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>City/Location</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="e.g., Toronto, Vancouver" {...field} disabled={loading} />
+                                            </FormControl>
+                                            <FormDescription>
+                                                For local court and tribunal recommendations.
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                             <FormField
                                 control={form.control}
                                 name="evidence"
@@ -318,24 +396,44 @@ export default function SubmitDisputePage() {
                                 </CardContent>
                             </Card>
                         </div>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-lg font-headline flex items-center gap-2">
-                                     <Milestone className="h-5 w-5" />
-                                    Suggested Next Steps
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div>
-                                    <h4 className="font-semibold">Analysis</h4>
-                                    <p className="text-muted-foreground text-sm whitespace-pre-wrap">{result.analysis}</p>
-                                </div>
-                                 <div>
-                                    <h4 className="font-semibold">Recommended Actions</h4>
-                                    <p className="text-muted-foreground text-sm whitespace-pre-wrap">{result.suggestedAvenues}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <div className="grid gap-6 md:grid-cols-1">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-lg font-headline flex items-center gap-2">
+                                         <Milestone className="h-5 w-5" />
+                                        Case Analysis & Similar Cases
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div>
+                                        <h4 className="font-semibold">Analysis</h4>
+                                        <p className="text-muted-foreground text-sm whitespace-pre-wrap">{result.analysis}</p>
+                                    </div>
+                                    {result.similarCases && (
+                                        <div>
+                                            <h4 className="font-semibold">Similar Cases in Your Region</h4>
+                                            <p className="text-muted-foreground text-sm whitespace-pre-wrap">{result.similarCases}</p>
+                                        </div>
+                                    )}
+                                    {result.provincialConsiderations && (
+                                        <div>
+                                            <h4 className="font-semibold">Provincial Legal Considerations</h4>
+                                            <p className="text-muted-foreground text-sm whitespace-pre-wrap">{result.provincialConsiderations}</p>
+                                        </div>
+                                    )}
+                                     <div>
+                                        <h4 className="font-semibold">Recommended Actions</h4>
+                                        <p className="text-muted-foreground text-sm whitespace-pre-wrap">{result.suggestedAvenues}</p>
+                                    </div>
+                                    {result.recommendedCourt && (
+                                        <div>
+                                            <h4 className="font-semibold">Recommended Court/Tribunal</h4>
+                                            <p className="text-muted-foreground text-sm whitespace-pre-wrap">{result.recommendedCourt}</p>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </div>
                     </CardContent>
                     <CardFooter className="flex-wrap gap-2">
                         <Button asChild variant="outline">

@@ -21,6 +21,7 @@ import {
   Library,
   MessageCircle,
   FolderOpen,
+  Navigation,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -45,6 +46,13 @@ const features = [
     description: 'Upload and manage all your case-related evidence files.',
     icon: FolderOpen,
     href: '/dashboard/evidence-locker',
+    isPrimary: true,
+  },
+  {
+    title: 'Your Legal Journey',
+    description: 'Get guided step-by-step assistance through your entire legal process.',
+    icon: Navigation,
+    href: '/dashboard/legal-journey',
     isPrimary: true,
   },
   {

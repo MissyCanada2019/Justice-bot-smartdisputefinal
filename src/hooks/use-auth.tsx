@@ -6,8 +6,6 @@ import { onAuthStateChanged, User, GoogleAuthProvider, signInWithPopup, signOut,
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { useToast } from './use-toast';
-import { verifyRecaptchaToken } from '@/ai/flows/verify-recaptcha';
-import { sendWelcomeEmail } from '@/lib/emailService';
 
 interface AuthContextType {
   user: User | null;
@@ -53,10 +51,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithGoogle = async (recaptchaToken: string) => {
     try {
-      const verification = await verifyRecaptchaToken({ 
-        token: recaptchaToken,
-        expectedAction: 'LOGIN'
+      // Verify recaptcha via API route
+      const verificationResponse = await fetch('/api/verify-recaptcha', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: recaptchaToken,
+          expectedAction: 'LOGIN'
+        }),
       });
+      
+      const verification = await verificationResponse.json();
 
       if (!verification.isValid) {
         toast({
@@ -77,7 +82,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (additionalUserInfo?.isNewUser) {
-        await sendWelcomeEmail(result.user.email!, result.user.displayName);
+        // Send welcome email via API route
+        try {
+          await fetch('/api/send-welcome-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: result.user.email!,
+              name: result.user.displayName
+            }),
+          });
+        } catch (error) {
+          console.error('Failed to send welcome email:', error);
+        }
         router.push('/dashboard/welcome');
       } else {
         router.push('/dashboard');
@@ -108,7 +125,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const displayName = email.split('@')[0];
         await updateProfile(userCredential.user, { displayName });
         
-        await sendWelcomeEmail(email, displayName);
+        // Send welcome email via API route
+        try {
+          await fetch('/api/send-welcome-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, name: displayName }),
+          });
+        } catch (error) {
+          console.error('Failed to send welcome email:', error);
+        }
 
         toast({
             title: 'Account Created!',
