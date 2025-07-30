@@ -18,12 +18,9 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { createCheckoutSession } from '@/app/actions/stripe';
-import { loadStripe } from '@stripe/stripe-js';
 import { getActiveSubscription, setActiveSubscription as setLocalStorageSub, addSinglePurchase } from '@/lib/subscription';
 
-// Ensure you create these products and prices in your Stripe Dashboard.
-// These are placeholder IDs.
+// Updated pricing tiers for PayPal and E-transfer payments
 const pricingTiers = [
   {
     name: 'Single Document',
@@ -32,7 +29,7 @@ const pricingTiers = [
     description: 'One legal form download (e.g., T2, HRTO-1).',
     features: ['One-time purchase', 'Form remains unlocked permanently', 'Ideal for single-use needs'],
     planId: 'single',
-    priceId: 'price_1PgTrDL0pLShFbLtnJLeB37a', 
+    paypalAmount: '5.99',
   },
   {
     name: 'Monthly Plan',
@@ -42,7 +39,7 @@ const pricingTiers = [
     features: ['Unlimited form generation', 'Unlimited PDF downloads', 'Access all legal summary tools', 'Priority AI access'],
     isPopular: true,
     planId: 'monthly',
-    priceId: 'price_1PgTqkL0pLShFbLtHl4eZzqt', 
+    paypalAmount: '59.99',
   },
   {
     name: 'Annual Plan',
@@ -51,7 +48,7 @@ const pricingTiers = [
     description: 'The best value for long-term needs.',
     features: ['All features from Monthly', '365 days of access', 'Significant savings over monthly'],
     planId: 'annual',
-    priceId: 'price_1PgTqkL0pLShFbLtUaTJr9HZ',
+    paypalAmount: '499.99',
   },
    {
     name: 'Low-Income Verified',
@@ -60,13 +57,9 @@ const pricingTiers = [
     description: 'Full access for verified users.',
     features: ['All features from Annual', 'Requires verification (coming soon)', 'Our commitment to access to justice'],
     planId: 'low_income',
-    priceId: 'price_1PgTqkL0pLShFbLtK25mY7t4',
+    paypalAmount: '25.99',
   },
 ];
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
 
 export default function PricingPage() {
   const [activeSub, setActiveSub] = useState<string | null>(null);
@@ -111,7 +104,7 @@ export default function PricingPage() {
   }, [searchParams, router, toast]);
 
 
-  const handleChoosePlan = async (priceId: string, planId: string) => {
+  const handleChoosePlan = async (planId: string, amount: string) => {
     if (!user) {
         toast({ title: 'Please log in', description: 'You must be logged in to make a purchase.', variant: 'destructive'});
         router.push('/login');
@@ -121,25 +114,30 @@ export default function PricingPage() {
     setLoadingPlan(planId);
 
     try {
-        const { sessionId, error } = await createCheckoutSession(priceId, user.uid, planId);
-
-        if (error || !sessionId) {
-            throw new Error(error || 'Could not create a checkout session.');
-        }
-
-        const stripe = await stripePromise;
-        if (!stripe) throw new Error('Stripe.js has not loaded yet.');
-
-        const { error: stripeError } = await stripe.redirectToCheckout({ sessionId });
+        // Show payment instructions modal/toast
+        const plan = pricingTiers.find(tier => tier.planId === planId);
+        const planName = plan?.name || 'Selected Plan';
         
-        if (stripeError) {
-            throw stripeError;
-        }
+        toast({
+            title: 'Payment Instructions',
+            description: `To activate your ${planName}, please send $${amount} CAD via:
+
+PayPal: admin@justice-bot.com
+E-transfer: admin@justice-bot.com
+
+Include your email (${user.email}) in the payment note. Your account will be activated within 24 hours of payment confirmation.`,
+            duration: 10000,
+        });
+
+        // In a real implementation, you might:
+        // 1. Create a pending payment record in your database
+        // 2. Send an email to admin@justice-bot.com with payment details
+        // 3. Set up a system to check for payments and activate accounts
 
     } catch (error: any) {
          toast({
             title: 'An Error Occurred',
-            description: error.message || 'Failed to initiate the payment process. Please try again.',
+            description: error.message || 'Failed to show payment instructions. Please try again.',
             variant: 'destructive',
         });
     } finally {
@@ -207,13 +205,13 @@ export default function PricingPage() {
               </ul>
             </CardContent>
             <CardFooter className="flex-col items-stretch gap-2">
-              <Button 
-                className="w-full" 
-                onClick={() => handleChoosePlan(tier.priceId, tier.planId)}
+              <Button
+                className="w-full"
+                onClick={() => handleChoosePlan(tier.planId, tier.paypalAmount)}
                 disabled={loadingPlan === tier.planId || activeSub === tier.planId || (tier.planId === 'low_income' && !isFreeTier) /* Disable low income unless verified */}
                 variant={tier.isPopular ? 'default' : 'outline'}
               >
-                {loadingPlan === tier.planId ? <Loader2 className="animate-spin" /> : activeSub === tier.planId ? 'Current Plan' : (tier.planId === 'low_income' ? 'Coming Soon' : 'Choose Plan')}
+                {loadingPlan === tier.planId ? <Loader2 className="animate-spin" /> : activeSub === tier.planId ? 'Current Plan' : (tier.planId === 'low_income' ? 'Coming Soon' : 'Get Payment Instructions')}
               </Button>
             </CardFooter>
           </Card>
