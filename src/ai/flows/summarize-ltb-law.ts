@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview Summarizes Landlord Tenant Board (LTB) laws for a given Canadian province or territory.
  *

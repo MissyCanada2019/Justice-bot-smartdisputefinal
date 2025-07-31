@@ -1,5 +1,4 @@
 
-'use server';
 /**
  * @fileOverview Generates a legal timeline for a given case.
  *

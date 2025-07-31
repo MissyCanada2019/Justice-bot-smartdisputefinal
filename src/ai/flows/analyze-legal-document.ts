@@ -1,7 +1,6 @@
-import { z } from 'zod';
+import { z } from 'genkit';
 
 import { ai } from '@/ai/genkit';
-import { defineFlow } from 'genkit';
 
 const analyzeLegalDocumentSchema = z.object({
   sections: z.record(z.string(), z.string()),
@@ -15,7 +14,7 @@ Your output should be a JSON object where keys are the section numbers (as strin
 Ensure that the entire document is captured in the output.
 `;
 
-export const analyzeLegalDocumentFlow = defineFlow(
+export const analyzeLegalDocumentFlow = ai.defineFlow(
   {
     name: 'analyzeLegalDocument',
     inputSchema: z.string(),

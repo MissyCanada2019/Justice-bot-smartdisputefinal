@@ -3,7 +3,7 @@
 // - SummarizeFamilyLawInput - The input type for the summarizeFamilyLaw function.
 // - SummarizeFamilyLawOutput - The return type for the summarizeFamilyLaw function.
 
-'use server';
+
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';

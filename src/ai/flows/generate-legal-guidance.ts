@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview Generates step-by-step legal guidance after form generation
  * Acts as a "pocket lawyer" to guide users through their legal journey

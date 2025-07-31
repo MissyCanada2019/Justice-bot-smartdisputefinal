@@ -1,5 +1,4 @@
 
-'use server';
 /**
  * @fileOverview Provides a conversational chat interface for users.
  *

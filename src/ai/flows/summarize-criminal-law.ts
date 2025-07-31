@@ -1,5 +1,4 @@
 // Summarize Criminal Law Flow
-'use server';
 
 /**
  * @fileOverview Summarizes criminal laws for a given Canadian province or territory.

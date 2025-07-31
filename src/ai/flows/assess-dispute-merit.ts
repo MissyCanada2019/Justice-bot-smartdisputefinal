@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview Assesses a legal dispute and provides a merit score.
  *

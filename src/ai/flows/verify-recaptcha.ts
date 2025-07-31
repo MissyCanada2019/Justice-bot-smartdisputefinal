@@ -1,5 +1,4 @@
 
-'use server';
 /**
  * @fileOverview Verifies a Google reCAPTCHA Enterprise token.
  *

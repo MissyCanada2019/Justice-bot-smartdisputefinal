@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview Explains a legal document in plain language.
  *

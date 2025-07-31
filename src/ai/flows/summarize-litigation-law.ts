@@ -1,4 +1,4 @@
-'use server';
+
 
 /**
  * @fileOverview Summarizes litigation laws for a given Canadian province or territory.
