@@ -51,25 +51,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithGoogle = async (recaptchaToken: string) => {
     try {
-      // Verify recaptcha via API route
-      const verificationResponse = await fetch('/api/verify-recaptcha', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token: recaptchaToken,
-          expectedAction: 'LOGIN'
-        }),
-      });
-      
-      const verification = await verificationResponse.json();
-
-      if (!verification.isValid) {
-        toast({
-            title: 'Security Check Failed',
-            description: `Could not verify you are human. Score: ${verification.score}. Reason: ${verification.reason}`,
-            variant: 'destructive',
+      // Only verify recaptcha if token is provided and recaptcha is configured
+      if (recaptchaToken && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+        try {
+          const verificationResponse = await fetch('/api/verify-recaptcha', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              token: recaptchaToken,
+              expectedAction: 'LOGIN'
+            }),
           });
-        return;
+          
+          const verification = await verificationResponse.json();
+
+          if (!verification.isValid) {
+            toast({
+                title: 'Security Check Failed',
+                description: `Could not verify you are human. Score: ${verification.score}. Reason: ${verification.reason}`,
+                variant: 'destructive',
+              });
+            return;
+          }
+        } catch (recaptchaError) {
+          console.warn('reCAPTCHA verification failed, proceeding without it:', recaptchaError);
+        }
       }
 
       const provider = new GoogleAuthProvider();

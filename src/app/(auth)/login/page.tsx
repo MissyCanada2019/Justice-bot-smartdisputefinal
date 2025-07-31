@@ -69,29 +69,39 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-     if ((window as any).grecaptcha && (window as any).grecaptcha.enterprise) {
-      try {
-        (window as any).grecaptcha.enterprise.ready(async () => {
-          try {
-            const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-            if (!siteKey) throw new Error("reCAPTCHA site key not found.");
-            const token = await (window as any).grecaptcha.enterprise.execute(siteKey, {action: 'LOGIN'});
-            if (token) {
-              await signInWithGoogle(token);
+    try {
+      // Check if reCAPTCHA is available and properly configured
+      if ((window as any).grecaptcha && (window as any).grecaptcha.enterprise && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+        try {
+          (window as any).grecaptcha.enterprise.ready(async () => {
+            try {
+              const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+              const token = await (window as any).grecaptcha.enterprise.execute(siteKey, {action: 'LOGIN'});
+              if (token) {
+                await signInWithGoogle(token);
+              }
+            } catch (e) {
+              // If reCAPTCHA fails, fallback to sign-in without it
+              console.warn('reCAPTCHA failed, proceeding without verification:', e);
+              await signInWithGoogle('');
+            } finally {
+              setLoading(false);
             }
-          } catch (e) {
-             toast({
-                title: 'reCAPTCHA Error',
-                description: 'Could not verify your request. Please try again.',
-                variant: 'destructive',
-              });
-          } finally {
-            setLoading(false);
-          }
-        });
-      } catch (e) {
+          });
+        } catch (e) {
+          // If reCAPTCHA setup fails, fallback to sign-in without it
+          console.warn('reCAPTCHA setup failed, proceeding without verification:', e);
+          await signInWithGoogle('');
+          setLoading(false);
+        }
+      } else {
+        // No reCAPTCHA available, proceed without it
+        await signInWithGoogle('');
         setLoading(false);
       }
+    } catch (error) {
+      console.error('Google sign-in failed:', error);
+      setLoading(false);
     }
   };
 
