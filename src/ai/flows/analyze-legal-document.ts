@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { ai } from '../ai';
-import { Flow } from '../flow';
+import { ai } from '@/ai/genkit';
+import { defineFlow } from 'genkit';
 
 const analyzeLegalDocumentSchema = z.object({
   sections: z.record(z.string(), z.string()),
@@ -15,19 +15,26 @@ Your output should be a JSON object where keys are the section numbers (as strin
 Ensure that the entire document is captured in the output.
 `;
 
-export const analyzeLegalDocument = new Flow(
-  'analyze-legal-document',
-  ai
-    .completion({
-      model: 'gpt-4o',
-      response_format: { type: 'json_object' },
-      temperature: 0.1,
-      max_tokens: 4000,
-    })
-    .withDescription(analyzeLegalDocumentDescription)
-    .withInputSchema(z.string())
-    .withOutputSchema(analyzeLegalDocumentSchema)
+export const analyzeLegalDocumentFlow = defineFlow(
+  {
+    name: 'analyzeLegalDocument',
+    inputSchema: z.string(),
+    outputSchema: analyzeLegalDocumentSchema,
+  },
+  async (documentText) => {
+    const prompt = ai.definePrompt({
+      name: 'analyzeLegalDocumentPrompt',
+      input: { schema: z.string() },
+      output: { schema: analyzeLegalDocumentSchema },
+      system: analyzeLegalDocumentDescription,
+      prompt: `Please analyze the following legal document:
+      
+{{documentText}}
+
+Return a JSON object with section numbers as keys and section content as values.`,
+    });
+
+    const { output } = await prompt(documentText);
+    return output!;
+  }
 );
-'11': '11. Any person charged with an offence has the right (a) to be informed without unreasonable delay of the specific offence; (b) to be tried within a reasonable time; (c) not to be compelled to be a witness in proceedings against that person in respect of that offence; (d) to be presumed innocent until proven guilty according to law in a fair and public hearing by an independent and impartial tribunal; (e) not to be denied reasonable bail without just cause;
-(f) except in the case of an offence under military law tried before a military tribunal, to the benefit of trial by jury where the maximum punishment for the offence is imprisonment for five years or a more severe punishment; (g) not to be found guilty on account of any act or omission unless, at the time of the act or omission, it constituted an offence under Canadian or international law or was criminal according to the general principles of law recognized by civilized nations; (h) if finally acquitted of the offence, not to be tried for it again and, if finally found guilty and punished for the offence, not to be tried or punished for it again; and (i) if found guilty of the offence and if the punishment for the offence has been varied between the time of commission and the time of sentence, to the benefit of the lesser punishment.',
-  };

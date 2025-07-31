@@ -116,10 +116,13 @@ export default function SubmitDisputePage() {
                 const file = values.evidence[0];
                 if (file.type.startsWith('text/') || file.name.endsWith('.md')) {
                    evidenceText = await readFileAsText(file);
+                } else if (file.type.startsWith('image/')) {
+                    // For images, we'll reference them by filename in the evidence text
+                    evidenceText = `[Image Evidence: ${file.name}]`;
                 } else {
                     toast({
                         title: 'Unsupported File Type',
-                        description: 'Please upload a plain text file (.txt, .md).',
+                        description: 'Please upload a plain text file (.txt, .md) or an image (.jpg, .png).',
                         variant: 'destructive',
                     });
                     setLoading(false);
@@ -282,21 +285,22 @@ export default function SubmitDisputePage() {
                                                         <p className="mb-2 text-sm text-muted-foreground">
                                                             <span className="font-semibold">Click to upload</span> or drag and drop
                                                         </p>
-                                                        <p className="text-xs text-muted-foreground">Plain Text (.txt, .md)</p>
+                                                        <p className="text-xs text-muted-foreground">Plain Text (.txt, .md) or Images (.jpg, .png)</p>
                                                     </div>
-                                                    <Input 
-                                                        id="dropzone-file" 
-                                                        type="file" 
-                                                        className="hidden" 
+                                                    <Input
+                                                        id="dropzone-file"
+                                                        type="file"
+                                                        className="hidden"
                                                         {...rest}
                                                         onChange={(e) => onChange(e.target.files)}
                                                         disabled={loading}
+                                                        accept=".txt,.md,image/*"
                                                     />
                                                 </label>
                                             </div>
                                         </FormControl>
                                         <FormDescription>
-                                            Upload a text file containing evidence like emails or transcripts.
+                                            Upload a text file containing evidence like emails or transcripts, or an image file.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>

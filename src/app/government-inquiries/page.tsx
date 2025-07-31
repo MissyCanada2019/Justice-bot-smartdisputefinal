@@ -1,57 +1,196 @@
+'use client';
 
-import SiteHeader from '@/components/site-header';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ClientDate } from '@/components/client-date';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import { useState } from 'react';
+import { Building, Mail, Phone, Clock } from 'lucide-react';
 
 export default function GovernmentInquiriesPage() {
+  const [formData, setFormData] = useState({
+    department: '',
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      // Reset form
+      setFormData({ department: '', name: '', email: '', subject: '', message: '' });
+    }, 1500);
+  };
+
   return (
-    <div className="bg-background min-h-screen">
-      <SiteHeader />
-      <main className="py-24 sm:py-32">
-        <div className="mx-auto max-w-4xl px-6 lg:px-8">
+    <div className="container mx-auto py-12">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold tracking-tight font-headline mb-4">Government Inquiries</h1>
+          <p className="text-muted-foreground text-lg">
+            For government agencies, courts, and public institutions seeking information about JusticeBot.AI
+          </p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building className="h-5 w-5" />
+                  Government Relations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold">Department Contact</h3>
+                    <p className="text-muted-foreground">government@justice-bot.com</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold">Direct Line</h3>
+                    <p className="text-muted-foreground">+1 (555) 123-4568</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Clock className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold">Response Time</h3>
+                    <p className="text-muted-foreground">1-3 business days for initial response</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Common Inquiries</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <h3 className="font-semibold">Partnership Opportunities</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Integration with court systems, legal aid organizations, and government services
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold">Compliance & Regulation</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Information about our compliance with legal and privacy regulations
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold">Research Collaboration</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Academic and research partnerships for legal technology advancement
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           <Card>
             <CardHeader>
-              <CardTitle className="font-headline text-4xl">Government and Law Enforcement Inquiries</CardTitle>
-               <p className="text-muted-foreground pt-2">Last Updated: <ClientDate /></p>
+              <CardTitle>Submit Your Inquiry</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6 text-foreground/80">
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold font-headline text-foreground">1. Our Commitment</h2>
-                <p>
-                    JusticeBot.AI is committed to user privacy and protecting the sensitive data entrusted to us. At the same time, we are required to comply with Canadian law. This policy outlines our principles and process for responding to government and law enforcement requests for user data.
-                </p>
-              </div>
-               <div className="space-y-2">
-                <h2 className="text-xl font-bold font-headline text-foreground">2. Principles</h2>
-                <ul className="list-disc pl-6 space-y-1">
-                    <li><strong>Legality:</strong> We will only disclose user data when required by a legally valid and binding order, such as a subpoena, court order, or search warrant, issued by a Canadian court or government body with proper jurisdiction.</li>
-                    <li><strong>Specificity:</strong> We will interpret all requests as narrowly as possible and will push back against overly broad requests for information. We will not provide "bulk" data or direct access to our systems.</li>
-                    <li><strong>Transparency:</strong> Whenever legally permitted, we will notify users of a request for their data before disclosure, providing them with an opportunity to challenge the request. We may delay notification if prohibited by law or if we believe notification could create a risk of injury or death.</li>
-                </ul>
-              </div>
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold font-headline text-foreground">3. Process for Handling Requests</h2>
-                <p>
-                    All government and law enforcement requests must be sent to our designated legal contact address. Upon receipt, our team will:
-                </p>
-                 <ul className="list-decimal pl-6 space-y-1">
-                    <li>Verify the legal validity of the request.</li>
-                    <li>Assess whether the request is overly broad or otherwise inappropriate.</li>
-                    <li>If the request is valid, we will search for and retrieve only the specific information required.</li>
-                    <li>Unless prohibited by law, we will attempt to notify the affected user.</li>
-                    <li>We will maintain a record of all requests received and the data disclosed.</li>
-                </ul>
-              </div>
-               <div className="space-y-2">
-                <h2 className="text-xl font-bold font-headline text-foreground">4. International Requests</h2>
-                <p>
-                  Requests from foreign governments must be processed through a Canadian court via a mutual legal assistance treaty (MLAT) or similar diplomatic procedure. We will not respond directly to requests from non-Canadian law enforcement agencies.
-                </p>
-              </div>
+            <CardContent>
+              {isSubmitted ? (
+                <div className="text-center py-8">
+                  <div className="text-green-600 mb-4">✓</div>
+                  <h3 className="text-lg font-semibold mb-2">Inquiry Submitted!</h3>
+                  <p className="text-muted-foreground">
+                    Thank you for your inquiry. Our government relations team will contact you shortly.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="department">Government Department</Label>
+                    <Input
+                      id="department"
+                      name="department"
+                      value={formData.department}
+                      onChange={handleChange}
+                      placeholder="e.g., Ministry of Justice, Court Services"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="subject">Subject</Label>
+                    <Input
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      rows={4}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
+                  </Button>
+                </form>
+              )}
             </CardContent>
           </Card>
         </div>
-      </main>
+
+        <div className="mt-12 text-center">
+          <Button asChild variant="outline">
+            <Link href="/">Back to Home</Link>
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

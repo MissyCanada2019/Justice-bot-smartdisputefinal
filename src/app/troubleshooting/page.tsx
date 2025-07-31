@@ -1,129 +1,237 @@
-
 'use client';
 
-import SiteHeader from '@/components/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertTriangle, ExternalLink, CheckCircle } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { AlertCircle, CheckCircle, HelpCircle, RefreshCw } from 'lucide-react';
+import Link from 'next/link';
 
 export default function TroubleshootingPage() {
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'justicebotai';
-  const authSettingsUrl = `https://console.firebase.google.com/u/0/project/${projectId}/authentication/settings`;
-  const signInMethodUrl = `https://console.firebase.google.com/u/0/project/${projectId}/authentication/sign-in-method`;
-  const domainToAdd = `studio--${projectId}.us-central1.hosted.app`;
+  const commonIssues = [
+    {
+        
+      id: "login-issues",
+      title: "Login and Authentication Problems",
+      content: (
+        <div className="space-y-3">
+          <h4 className="font-semibold">Troubleshooting Steps:</h4>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>Ensure you're using the correct email and password</li>
+            <li>Check that Caps Lock is off when entering your password</li>
+            <li>Try clearing your browser cache and cookies</li>
+            <li>Use the "Forgot Password" feature to reset your password</li>
+            <li>Try logging in with a different browser or device</li>
+          </ul>
+          <p className="mt-3">
+            If issues persist, contact support at support@justice-bot.com with details about the problem.
+          </p>
+        </div>
+      )
+    },
+    {
+      id: "form-generation",
+      title: "Legal Form Generation Issues",
+      content: (
+        <div className="space-y-3">
+          <h4 className="font-semibold">Troubleshooting Steps:</h4>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>Ensure all required fields in your dispute submission are filled out</li>
+            <li>Check that your case details are clear and comprehensive</li>
+            <li>Try using a different web browser</li>
+            <li>Refresh the page and try again</li>
+            <li>Check your internet connection stability</li>
+          </ul>
+          <p className="mt-3">
+            If forms aren't generating properly, try submitting a simpler version of your case first.
+          </p>
+        </div>
+      )
+    },
+    {
+      id: "payment-issues",
+      title: "Payment and Subscription Problems",
+      content: (
+        <div className="space-y-3">
+          <h4 className="font-semibold">Troubleshooting Steps:</h4>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>Verify your payment method details are correct</li>
+            <li>Check that your bank or card issuer isn't blocking the transaction</li>
+            <li>Try a different payment method</li>
+            <li>Ensure you have sufficient funds or credit available</li>
+            <li>Check for any pending transactions that might be holding funds</li>
+          </ul>
+          <p className="mt-3">
+            For billing questions, contact billing@justice-bot.com or call +1 (555) 123-4569.
+          </p>
+        </div>
+      )
+    },
+    {
+      id: "document-upload",
+      title: "Document Upload and Evidence Locker Issues",
+      content: (
+        <div className="space-y-3">
+          <h4 className="font-semibold">Troubleshooting Steps:</h4>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>Ensure your document is in a supported format (PDF, DOC, DOCX, TXT, JPG, PNG)</li>
+            <li>Check that your file size is under 10MB</li>
+            <li>Try uploading one document at a time</li>
+            <li>Refresh the page before attempting to upload again</li>
+            <li>Try using a different web browser</li>
+          </ul>
+          <p className="mt-3">
+            If uploads consistently fail, contact support with details about your file and browser.
+          </p>
+        </div>
+      )
+    },
+    {
+      id: "ai-analysis",
+      title: "AI Analysis and Merit Score Issues",
+      content: (
+        <div className="space-y-3">
+          <h4 className="font-semibold">Troubleshooting Steps:</h4>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>Ensure your case details are comprehensive and specific</li>
+            <li>Include relevant dates, names, and key events</li>
+            <li>Provide supporting evidence when possible</li>
+            <li>Try rephrasing your case description for clarity</li>
+            <li>Check that your case falls within our supported legal areas</li>
+          </ul>
+          <p className="mt-3">
+            If analysis seems inaccurate, you can provide feedback through the app to help us improve.
+          </p>
+        </div>
+      )
+    }
+  ];
+
+  const faqItems = [
+    {
+      question: "How long does it take to generate a legal form?",
+      answer: "Most forms are generated within 30 seconds of submission. Complex cases may take up to 2 minutes."
+    },
+    {
+      question: "Can I edit my generated forms?",
+      answer: "Yes, all generated forms are provided in editable PDF format that you can modify as needed."
+    },
+    {
+      question: "What browsers are supported?",
+      answer: "JusticeBot.AI works best on the latest versions of Chrome, Firefox, Safari, and Edge."
+    },
+    {
+      question: "Is my data secure?",
+      answer: "Yes, we use industry-standard encryption and security measures to protect your data. See our Privacy Policy for details."
+    }
+  ];
 
   return (
-    <>
-      <SiteHeader />
-      <main className="min-h-screen px-4 py-12 bg-background">
-        <div className="mx-auto w-full max-w-3xl space-y-8">
-            <div className="text-center">
-                <AlertTriangle className="w-16 h-16 mx-auto text-destructive" />
-                <h1 className="mt-4 text-3xl font-bold tracking-tight font-headline text-foreground">
-                    Authentication Setup
-                </h1>
-                <p className="text-lg text-muted-foreground">
-                    Follow these one-time steps in Firebase to enable sign-in.
-                </p>
-            </div>
-
-            <Card className="border-destructive border-2">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-google"><path d="M12 12v1h.5a2.5 2.5 0 1 0 0-5H12v1z"/><path d="M11.38 12.5A2.5 2.5 0 1 0 7.5 7.77"/><path d="M12.5 11.38A2.5 2.5 0 1 0 16.23 15"/></svg>
-                    Fix Google Sign-In
-                </CardTitle>
-                <p className="text-muted-foreground">
-                    This fixes errors like `auth/unauthorized-domain`.
-                </p>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="space-y-4 text-lg">
-                <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 font-bold rounded-full bg-primary text-primary-foreground shrink-0">1</div>
-                    <div className="flex-1">
-                    <p className="font-semibold text-foreground">Open Authentication Settings</p>
-                    <p className="text-base text-muted-foreground">Click the button below to go to the "Settings" tab in Firebase Authentication.</p>
-                    <Button asChild className="w-full mt-2">
-                        <a href={authSettingsUrl} target="_blank" rel="noopener noreferrer">
-                        Go to Firebase Auth Settings <ExternalLink className="ml-2"/>
-                        </a>
-                    </Button>
-                    </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 font-bold rounded-full bg-primary text-primary-foreground shrink-0">2</div>
-                    <div className="flex-1">
-                    <p className="font-semibold text-foreground">Add Domain</p>
-                    <p className="text-base text-muted-foreground">On the new page, find the section called <strong className="text-primary">"Authorized domains"</strong> and click the button that says <strong className="text-primary">"Add domain"</strong>.</p>
-                    </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 font-bold rounded-full bg-primary text-primary-foreground shrink-0">3</div>
-                    <div className="flex-1">
-                    <p className="font-semibold text-foreground">Enter This Exact Text</p>
-                    <p className="text-base text-muted-foreground">A box will pop up. Copy the text below and paste it into the box, then click "Add".</p>
-                    <div className="p-3 mt-2 font-mono text-sm text-center break-all rounded-md bg-muted text-foreground">
-                        {domainToAdd}
-                    </div>
-                    </div>
-                </div>
-                </div>
-            </CardContent>
-            </Card>
-
-            <Card className="border-primary border-2">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
-                    Fix Email & Password Sign-Up
-                </CardTitle>
-                <p className="text-muted-foreground">
-                    This fixes errors like `auth/requests-to-this-api...are-blocked`.
-                </p>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="space-y-4 text-lg">
-                <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 font-bold rounded-full bg-primary text-primary-foreground shrink-0">1</div>
-                    <div className="flex-1">
-                    <p className="font-semibold text-foreground">Open Sign-in Methods</p>
-                    <p className="text-base text-muted-foreground">Click the button below. It will open the "Sign-in method" tab in your Firebase project.</p>
-                    <Button asChild className="w-full mt-2">
-                        <a href={signInMethodUrl} target="_blank" rel="noopener noreferrer">
-                        Go to Firebase Sign-in Methods <ExternalLink className="ml-2"/>
-                        </a>
-                    </Button>
-                    </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 font-bold rounded-full bg-primary text-primary-foreground shrink-0">2</div>
-                    <div className="flex-1">
-                    <p className="font-semibold text-foreground">Enable Email/Password</p>
-                    <p className="text-base text-muted-foreground">From the list of providers, click on <strong className="text-primary">"Email/Password"</strong>. A panel will open on the right.</p>
-                    </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 font-bold rounded-full bg-primary text-primary-foreground shrink-0">3</div>
-                    <div className="flex-1">
-                    <p className="font-semibold text-foreground">Flick the Switch</p>
-                    <p className="text-base text-muted-foreground">Click the toggle switch to enable the provider, and then click "Save".</p>
-                    </div>
-                </div>
-                </div>
-            </CardContent>
-            </Card>
-            
-            <div className="p-4 text-center rounded-lg bg-green-50 border-green-200 border">
-                <CheckCircle className="w-8 h-8 mx-auto text-green-600"/>
-                <p className="mt-2 font-semibold text-green-800">That's it! Once you've completed these steps, your sign-in and sign-up pages will work correctly.</p>
-            </div>
+    <div className="container mx-auto py-12">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold tracking-tight font-headline mb-4">Troubleshooting Guide</h1>
+          <p className="text-muted-foreground text-lg">
+            Common issues and solutions to help you get the most from JusticeBot.AI
+          </p>
         </div>
-      </main>
-    </>
+
+        <div className="grid gap-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <HelpCircle className="h-5 w-5" />
+                Common Issues & Solutions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                {commonIssues.map((issue) => (
+                  <AccordionItem key={issue.id} value={issue.id}>
+                    <AccordionTrigger>{issue.title}</AccordionTrigger>
+                    <AccordionContent>
+                      {issue.content}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5" />
+                Quick Fixes
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="p-4 border rounded-lg">
+                  <h3 className="font-semibold mb-2">Refresh Page</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Sometimes a simple page refresh resolves loading issues.
+                  </p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h3 className="font-semibold mb-2">Clear Cache</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Clear your browser cache to resolve display problems.
+                  </p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h3 className="font-semibold mb-2">Check Connection</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Ensure you have a stable internet connection.
+                  </p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h3 className="font-semibold mb-2">Try Different Browser</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Switch browsers if you're experiencing persistent issues.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5" />
+                Still Need Help?
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="p-4 border rounded-lg">
+                  <h3 className="font-semibold mb-2">Contact Support</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Email us at support@justice-bot.com for personalized assistance.
+                  </p>
+                  <Button asChild size="sm">
+                    <Link href="mailto:support@justice-bot.com">Email Support</Link>
+                  </Button>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h3 className="font-semibold mb-2">Live Chat</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Connect with our support team through the in-app chat feature.
+                  </p>
+                  <Button asChild size="sm">
+                    <Link href="/dashboard">Go to Dashboard</Link>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mt-12 text-center">
+          <Button asChild variant="outline">
+            <Link href="/">Back to Home</Link>
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

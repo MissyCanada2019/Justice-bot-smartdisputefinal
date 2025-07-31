@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  analyzeLegalDocument,
+  analyzeLegalDocumentFlow,
   AnalyzeLegalDocumentOutput,
 } from '@/ai/flows/analyze-legal-document';
 import { Gavel, Loader2 } from 'lucide-react';
@@ -41,7 +41,7 @@ export default function CharterAnalysisPage() {
     setResult(null);
 
     try {
-      const output = await analyzeLegalDocument({ documentText });
+      const output = await analyzeLegalDocumentFlow(documentText);
       setResult(output);
     } catch (error) {
       console.error(error);

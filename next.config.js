@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  // Enable static export for Firebase Hosting
+  output: 'export',
+  
+  // Disable image optimization for static export
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -11,6 +15,9 @@ const nextConfig = {
       },
     ],
   },
+  
+  // Enable trailing slash
+  trailingSlash: true,
 };
 
 module.exports = nextConfig;

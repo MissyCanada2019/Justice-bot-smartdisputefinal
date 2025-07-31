@@ -231,8 +231,13 @@ export default function GenerateFormPage() {
     } else {
       toast({
         title: 'Form Downloaded',
-        description: 'Your pre-filled legal form has been downloaded successfully.',
+        description: 'Your pre-filled legal form has been downloaded successfully. Starting your guided legal journey...',
       });
+      
+      // Redirect to legal journey after successful download
+      setTimeout(() => {
+        router.push('/dashboard/legal-journey');
+      }, 2000);
     }
   };
 

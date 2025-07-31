@@ -1,1 +1,1 @@
-web: gunicorn Justice-bot-smartdisputefinal.app:app
+web: npm run build && npx serve@latest out -l $PORT

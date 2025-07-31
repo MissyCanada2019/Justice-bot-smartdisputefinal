@@ -1,56 +1,147 @@
+'use client';
 
-import SiteHeader from '@/components/site-header';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function MediaInquiriesPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    organization: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      // Reset form
+      setFormData({ name: '', email: '', organization: '', message: '' });
+    }, 1500);
+  };
+
   return (
-    <div className="bg-background min-h-screen">
-      <SiteHeader />
-      <main className="py-24 sm:py-32">
-        <div className="mx-auto max-w-4xl px-6 lg:px-8">
+    <div className="container mx-auto py-12">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold tracking-tight font-headline mb-4">Media Inquiries</h1>
+          <p className="text-muted-foreground text-lg">
+            For press requests, interviews, or media-related questions, please reach out to our team.
+          </p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle className="font-headline text-4xl">Media Inquiries</CardTitle>
-              <p className="text-muted-foreground pt-2">
-                For journalists, bloggers, and media professionals.
-              </p>
+              <CardTitle>Contact Information</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6 text-foreground/80">
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold font-headline text-foreground">Get in Touch</h2>
-                <p>
-                  We are happy to connect with members of the media to discuss the mission behind JusticeBot.AI, the challenges of navigating the Canadian legal system, and the role of technology in access to justice.
-                </p>
-                <p>
-                  For all media-related inquiries, including requests for interviews with our founder, Teresa, please contact us directly.
-                </p>
+            <CardContent className="space-y-4">
+              <div>
+                <h3 className="font-semibold">Press Contact</h3>
+                <p className="text-muted-foreground">press@justice-bot.com</p>
               </div>
-              <div className="space-y-4">
-                 <div className="flex items-center gap-4">
-                    <Mail className="h-6 w-6 text-primary"/>
-                    <div>
-                        <h3 className="font-semibold text-foreground">Email</h3>
-                        <a href="mailto:admin@justice-bot.com" className="text-primary hover:underline">
-                            admin@justice-bot.com
-                        </a>
-                    </div>
-                 </div>
+              <div>
+                <h3 className="font-semibold">General Inquiries</h3>
+                <p className="text-muted-foreground">media@justice-bot.com</p>
               </div>
-               <div className="space-y-2">
-                <h2 className="text-xl font-bold font-headline text-foreground">About JusticeBot.AI</h2>
-                <p>
-                  JusticeBot.AI was founded out of a personal struggle with the legal system. Our mission is to empower self-represented litigants across Canada with AI-powered tools to demystify legal documents, understand their rights, and navigate their legal journey with more confidence.
-                </p>
-                 <p>
-                  Learn more about <Link href="/about" className="text-primary hover:underline">Our Story</Link>.
-                </p>
+              <div>
+                <h3 className="font-semibold">Phone</h3>
+                <p className="text-muted-foreground">+1 (555) 123-4567</p>
+              </div>
+              <div>
+                <h3 className="font-semibold">Response Time</h3>
+                <p className="text-muted-foreground">We typically respond within 1-2 business days.</p>
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Send a Message</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isSubmitted ? (
+                <div className="text-center py-8">
+                  <div className="text-green-600 mb-4">✓</div>
+                  <h3 className="text-lg font-semibold mb-2">Message Sent!</h3>
+                  <p className="text-muted-foreground">
+                    Thank you for your inquiry. We'll get back to you soon.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="organization">Organization</Label>
+                    <Input
+                      id="organization"
+                      name="organization"
+                      value={formData.organization}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      rows={4}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                  </Button>
+                </form>
+              )}
+            </CardContent>
+          </Card>
         </div>
-      </main>
+
+        <div className="mt-12 text-center">
+          <Button asChild variant="outline">
+            <Link href="/">Back to Home</Link>
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
