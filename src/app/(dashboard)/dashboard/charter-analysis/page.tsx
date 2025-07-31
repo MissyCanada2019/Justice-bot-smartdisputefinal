@@ -12,10 +12,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  analyzeLegalDocumentFlow,
-  AnalyzeLegalDocumentOutput,
-} from '@/ai/flows/analyze-legal-document';
 import { Gavel, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CharterAnalysisPage() {
   const [documentText, setDocumentText] = useState('');
-  const [result, setResult] = useState<AnalyzeLegalDocumentOutput | null>(null);
+  const [result, setResult] = useState<{ sections: Record<string, string> } | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -41,7 +37,20 @@ export default function CharterAnalysisPage() {
     setResult(null);
 
     try {
-      const output = await analyzeLegalDocumentFlow(documentText);
+      // Call the API route instead of importing the AI flow directly
+      const response = await fetch('/api/analyze-legal-document', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ documentText }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to analyze document');
+      }
+      
+      const output = await response.json();
       setResult(output);
     } catch (error) {
       console.error(error);
@@ -119,18 +128,13 @@ export default function CharterAnalysisPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <h3 className="font-bold text-lg font-headline mb-2">Analysis</h3>
-              <p className="whitespace-pre-wrap text-foreground/90">{result.analysis}</p>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg font-headline mb-2">Relevant Charter Sections</h3>
-              <div className="flex flex-wrap gap-2">
-                {result.relevantCharterSections.map((section, index) => (
-                  <Badge key={index} variant="secondary">
-                    Section {section}
-                  </Badge>
-                ))}
-              </div>
+              <h3 className="font-bold text-lg font-headline mb-2">Document Sections</h3>
+              {Object.entries(result.sections).map(([sectionNumber, content]) => (
+                <div key={sectionNumber} className="mb-4">
+                  <h4 className="font-semibold">Section {sectionNumber}</h4>
+                  <p className="text-foreground/90">{content}</p>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
