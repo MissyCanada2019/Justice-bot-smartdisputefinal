@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { summarizeCriminalLaw, SummarizeCriminalLawOutput } from '@/ai/flows/summarize-criminal-law';
+import { SummarizeCriminalLawOutput } from '@/ai/flows/summarize-criminal-law';
 import { Scale, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { CANADIAN_PROVINCES_TERRITORIES } from '@/lib/constants';
@@ -43,7 +43,19 @@ export default function CriminalLawPage() {
     setResult(null);
 
     try {
-      const output = await summarizeCriminalLaw({ provinceOrTerritory: province });
+      const response = await fetch('/api/summarize-criminal-law', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ provinceOrTerritory: province }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to summarize criminal law');
+      }
+
+      const output = await response.json();
       setResult(output);
     } catch (error) {
       console.error(error);

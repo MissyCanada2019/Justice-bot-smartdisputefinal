@@ -8,16 +8,76 @@ runConfig:
   # memoryMiB: 512
 
 # Environment variables and secrets.
-# env:
+env:
   # Configure environment variables.
   # See https://firebase.google.com/docs/app-hosting/configure#user-defined-environment
-  # - variable: MESSAGE
-  #   value: Hello world!
-  #   availability:
-  #     - BUILD
-  #     - RUNTIME
+  
+  # Firebase Configuration (Required for app to function)
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    secret: firebase-api-key
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: justicebotai.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: justicebotai
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: justicebotai.appspot.com
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    secret: firebase-messaging-sender-id
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    secret: firebase-app-id
+    availability:
+      - BUILD
+      - RUNTIME
 
-  # Grant access to secrets in Cloud Secret Manager.
-  # See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
-  # - variable: MY_SECRET
-  #   secret: mySecretRef
+  # Google Project Configuration
+  - variable: GOOGLE_PROJECT_ID
+    value: justicebotai
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # reCAPTCHA Configuration
+  - variable: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+    secret: recaptcha-site-key
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Stripe Configuration
+  - variable: STRIPE_SECRET_KEY
+    secret: stripe-secret-key
+    availability:
+      - RUNTIME
+
+  # SendGrid Configuration
+  - variable: SENDGRID_API_KEY
+    secret: sendgrid-api-key
+    availability:
+      - RUNTIME
+
+  # App Configuration
+  - variable: NEXT_PUBLIC_FREE_TIER_ENABLED
+    value: "true"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_API_BASE_URL
+    value: https://studio--justicebotai.us-central1.hosted.app
+    availability:
+      - BUILD
+      - RUNTIME

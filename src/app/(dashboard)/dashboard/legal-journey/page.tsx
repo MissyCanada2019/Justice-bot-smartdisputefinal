@@ -30,7 +30,7 @@ import {
   BookOpen,
   Phone
 } from 'lucide-react';
-import { generateLegalGuidance, GenerateLegalGuidanceOutput } from '@/ai/flows/generate-legal-guidance';
+import { GenerateLegalGuidanceOutput } from '@/ai/flows/generate-legal-guidance';
 import { getLatestCaseAssessment } from '@/lib/firestoreService';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
@@ -62,14 +62,26 @@ export default function LegalJourneyPage() {
           return;
         }
 
-        const guidanceOutput = await generateLegalGuidance({
-          caseClassification: assessment.caseClassification,
-          suggestedForm: 'Generated Legal Form', // This would come from the form generation
-          province: (assessment as any).province || 'Ontario',
-          userLocation: (assessment as any).userLocation,
-          recommendedCourt: assessment.recommendedCourt,
-          meritScore: assessment.meritScore,
+        const response = await fetch('/api/generate-legal-guidance', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            caseClassification: assessment.caseClassification,
+            suggestedForm: 'Generated Legal Form', // This would come from the form generation
+            province: (assessment as any).province || 'Ontario',
+            userLocation: (assessment as any).userLocation,
+            recommendedCourt: assessment.recommendedCourt,
+            meritScore: assessment.meritScore,
+          }),
         });
+
+        if (!response.ok) {
+          throw new Error('Failed to generate legal guidance');
+        }
+
+        const guidanceOutput = await response.json();
 
         setGuidance(guidanceOutput);
         

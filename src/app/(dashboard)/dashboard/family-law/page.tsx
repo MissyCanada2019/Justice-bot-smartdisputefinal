@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { summarizeFamilyLaw, SummarizeFamilyLawOutput } from '@/ai/flows/summarize-family-law';
+import { SummarizeFamilyLawOutput } from '@/ai/flows/summarize-family-law';
 import { ShieldCheck, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { CANADIAN_PROVINCES_TERRITORIES } from '@/lib/constants';
@@ -43,7 +43,19 @@ export default function FamilyLawPage() {
     setResult(null);
 
     try {
-      const output = await summarizeFamilyLaw({ provinceOrTerritory: province });
+      const response = await fetch('/api/summarize-family-law', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ provinceOrTerritory: province }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const output = await response.json();
       setResult(output);
     } catch (error) {
       console.error(error);

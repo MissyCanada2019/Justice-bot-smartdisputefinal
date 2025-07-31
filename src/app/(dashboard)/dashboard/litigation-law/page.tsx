@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { summarizeLitigationLaw, SummarizeLitigationLawOutput } from '@/ai/flows/summarize-litigation-law';
+import { SummarizeLitigationLawOutput } from '@/ai/flows/summarize-litigation-law';
 import { BookOpen, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { CANADIAN_PROVINCES_TERRITORIES } from '@/lib/constants';
@@ -43,7 +43,19 @@ export default function LitigationLawPage() {
     setResult(null);
 
     try {
-      const output = await summarizeLitigationLaw({ provinceOrTerritory: province });
+      const response = await fetch('/api/summarize-litigation-law', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ provinceOrTerritory: province }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const output = await response.json();
       setResult(output);
     } catch (error) {
       console.error(error);

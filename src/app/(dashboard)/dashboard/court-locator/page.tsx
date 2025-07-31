@@ -23,7 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { findCourtAndAid, FindCourtAndAidOutput } from '@/ai/flows/find-court-flow';
+import { FindCourtAndAidOutput } from '@/ai/flows/find-court-flow';
 import { AssessDisputeMeritOutput } from '@/ai/flows/assess-dispute-merit';
 import { MapPin, Loader2, AlertCircle, Building, LifeBuoy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -88,10 +88,22 @@ export default function CourtLocatorPage() {
     setLoading(true);
     setResult(null);
     try {
-      const output = await findCourtAndAid({
-        postalCode: values.postalCode,
-        caseClassification: assessment.caseClassification,
+      const response = await fetch('/api/find-court-and-aid', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          postalCode: values.postalCode,
+          caseClassification: assessment.caseClassification,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to find court and aid information');
+      }
+
+      const output = await response.json();
       setResult(output);
     } catch (error) {
       console.error(error);

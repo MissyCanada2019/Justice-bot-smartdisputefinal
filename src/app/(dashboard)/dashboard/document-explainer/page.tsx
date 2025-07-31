@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  explainLegalDocument,
   ExplainLegalDocumentOutput,
 } from '@/ai/flows/explain-legal-document';
 import { FileSearch, Loader2 } from 'lucide-react';
@@ -45,7 +44,19 @@ export default function DocumentExplainerPage() {
     setResult(null);
 
     try {
-      const output = await explainLegalDocument({ documentText });
+      const response = await fetch('/api/explain-legal-document', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ documentText }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const output = await response.json();
       setResult(output);
       toast({
         title: 'Explanation Ready!',

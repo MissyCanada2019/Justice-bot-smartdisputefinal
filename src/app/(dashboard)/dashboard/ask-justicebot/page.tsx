@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { conversationalChat } from '@/ai/flows/conversational-chat';
 import { useAuth } from '@/hooks/use-auth';
 import { getLatestCaseAssessment, CaseDocument } from '@/lib/firestoreService';
 import { MessageCircle, Send, User, Loader2, AlertCircle } from 'lucide-react';
@@ -90,13 +89,24 @@ export default function AskJusticeBotPage() {
     setLoading(true);
 
     try {
-      const response = await conversationalChat({
-        question: input,
-        caseContext: caseContext ?? undefined,
-        chatHistory: messages,
+      const response = await fetch('/api/conversational-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: input,
+          caseContext: caseContext ?? undefined,
+          chatHistory: messages,
+        }),
       });
 
-      const botMessage: ChatMessage = { role: 'bot', content: response.answer };
+      if (!response.ok) {
+        throw new Error('Failed to get response from chat API');
+      }
+
+      const result = await response.json();
+      const botMessage: ChatMessage = { role: 'bot', content: result.answer };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Chat error:', error);

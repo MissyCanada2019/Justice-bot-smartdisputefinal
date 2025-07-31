@@ -15,7 +15,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import {
-  generateLegalForm,
   GenerateLegalFormOutput,
 } from '@/ai/flows/generate-legal-form';
 import { AssessDisputeMeritOutput } from '@/ai/flows/assess-dispute-merit';
@@ -88,16 +87,28 @@ export default function GenerateFormPage() {
     setError(null);
     setFormContent(null);
     try {
-        const output = await generateLegalForm({
-            caseClassification: assessment.caseClassification,
-            disputeDetails: assessment.analysis, // Using analysis for better context
-            suggestedAvenues: assessment.suggestedAvenues,
-            userEmail: user?.email || undefined,
-            userName: user?.displayName || undefined,
-            userLocation: (assessment as any).userLocation || undefined,
-            province: (assessment as any).province || undefined,
-            caseName: (assessment as any).caseName || undefined,
+        const response = await fetch('/api/generate-legal-form', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                caseClassification: assessment.caseClassification,
+                disputeDetails: assessment.analysis, // Using analysis for better context
+                suggestedAvenues: assessment.suggestedAvenues,
+                userEmail: user?.email || undefined,
+                userName: user?.displayName || undefined,
+                userLocation: (assessment as any).userLocation || undefined,
+                province: (assessment as any).province || undefined,
+                caseName: (assessment as any).caseName || undefined,
+            }),
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const output = await response.json();
         setFormContent(output);
     } catch (err) {
         console.error(err);

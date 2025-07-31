@@ -27,7 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FileText, Loader2, UploadCloud, BarChart, FileSignature, Milestone, CalendarClock, FilePlus2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
-import { assessDisputeMerit, AssessDisputeMeritOutput } from '@/ai/flows/assess-dispute-merit';
+import { AssessDisputeMeritOutput } from '@/ai/flows/assess-dispute-merit';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
@@ -130,14 +130,26 @@ export default function SubmitDisputePage() {
                 }
             }
 
-            const output = await assessDisputeMerit({
-                caseName: values.caseName,
-                disputeDetails: values.disputeDetails,
-                evidenceText: evidenceText,
-                province: values.province,
-                userEmail: user.email || undefined,
-                userLocation: values.userLocation,
+            const response = await fetch('/api/assess-dispute-merit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    caseName: values.caseName,
+                    disputeDetails: values.disputeDetails,
+                    evidenceText: evidenceText,
+                    province: values.province,
+                    userEmail: user.email || undefined,
+                    userLocation: values.userLocation,
+                }),
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to assess dispute merit');
+            }
+
+            const output = await response.json();
 
             await saveCaseAssessment(user.uid, output, {
                 caseName: values.caseName,

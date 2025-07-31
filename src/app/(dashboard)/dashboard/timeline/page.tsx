@@ -13,7 +13,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import {
-  generateLegalTimeline,
   GenerateLegalTimelineOutput,
 } from '@/ai/flows/generate-legal-timeline';
 import { AssessDisputeMeritOutput } from '@/ai/flows/assess-dispute-merit';
@@ -43,10 +42,22 @@ export default function TimelinePage() {
         const storedAssessment = await getLatestCaseAssessment(user.uid);
         if (storedAssessment) {
           setAssessment(storedAssessment);
-          const output = await generateLegalTimeline({
-            caseClassification: storedAssessment.caseClassification,
-            disputeDetails: storedAssessment.analysis,
+          const response = await fetch('/api/generate-legal-timeline', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              caseClassification: storedAssessment.caseClassification,
+              disputeDetails: storedAssessment.analysis,
+            }),
           });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const output = await response.json();
           setTimeline(output);
         }
       } catch (err: any) {
