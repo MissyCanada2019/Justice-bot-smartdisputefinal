@@ -114,9 +114,20 @@ export default function LoginPage() {
             <span className="font-headline text-2xl font-bold text-foreground">JusticeBot.AI</span>
           </Link>
           <CardTitle className="font-headline text-2xl">Welcome Back</CardTitle>
-          <CardDescription>Enter your credentials to access your dashboard.</CardDescription>
+          <CardDescription>Access your legal AI assistant dashboard.</CardDescription>
         </CardHeader>
         <CardContent>
+          <Button variant="outline" className="w-full mb-4" onClick={handleGoogleSignIn} disabled={loading}>
+            {loading ? <Loader2 className="animate-spin" /> : <><Icons.mapleLeaf className="mr-2 h-5 w-5" /> Continue with Google</>}
+          </Button>
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or sign in with email</span>
+            </div>
+          </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -170,17 +181,6 @@ export default function LoginPage() {
               </Button>
             </form>
           </Form>
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-            </div>
-          </div>
-          <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={loading}>
-            {loading ? <Loader2 className="animate-spin" /> : <><Icons.mapleLeaf className="mr-2 h-5 w-5" /> Google</>}
-          </Button>
         </CardContent>
         <CardFooter className="justify-center text-sm">
           <p className="text-muted-foreground">

@@ -31,13 +31,13 @@ import { Icons } from '@/components/icons';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  password: z.string().min(4, { message: 'Password must be at least 4 characters.' }),
 });
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { signUpWithEmail } = useAuth();
+  const { signUpWithEmail, signInWithGoogle } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,6 +62,44 @@ export default function SignUpPage() {
     }
   }
 
+  const handleGoogleSignUp = async () => {
+    setLoading(true);
+    try {
+      // Check if reCAPTCHA is available and properly configured
+      if ((window as any).grecaptcha && (window as any).grecaptcha.enterprise && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+        try {
+          (window as any).grecaptcha.enterprise.ready(async () => {
+            try {
+              const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+              const token = await (window as any).grecaptcha.enterprise.execute(siteKey, {action: 'SIGNUP'});
+              if (token) {
+                await signInWithGoogle(token);
+              }
+            } catch (e) {
+              // If reCAPTCHA fails, fallback to sign-in without it
+              console.warn('reCAPTCHA failed, proceeding without verification:', e);
+              await signInWithGoogle('');
+            } finally {
+              setLoading(false);
+            }
+          });
+        } catch (e) {
+          // If reCAPTCHA setup fails, fallback to sign-in without it
+          console.warn('reCAPTCHA setup failed, proceeding without verification:', e);
+          await signInWithGoogle('');
+          setLoading(false);
+        }
+      } else {
+        // No reCAPTCHA available, proceed without it
+        await signInWithGoogle('');
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Google sign-up failed:', error);
+      setLoading(false);
+    }
+  };
+
   return (
      <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
@@ -70,10 +108,21 @@ export default function SignUpPage() {
                 <Icons.justiceBotLogo className="h-10 w-auto" />
                 <span className="font-headline text-2xl font-bold text-foreground">JusticeBot.AI</span>
             </Link>
-          <CardTitle className="font-headline text-2xl">Create an Account</CardTitle>
-          <CardDescription>Enter your email and password to get started.</CardDescription>
+          <CardTitle className="font-headline text-2xl">Join JusticeBot.AI</CardTitle>
+          <CardDescription>Get instant access to AI-powered legal assistance - completely free!</CardDescription>
         </CardHeader>
         <CardContent>
+          <Button variant="outline" className="w-full mb-4" onClick={handleGoogleSignUp} disabled={loading}>
+            {loading ? <Loader2 className="animate-spin" /> : <><Icons.mapleLeaf className="mr-2 h-5 w-5" /> Continue with Google</>}
+          </Button>
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or sign up with email</span>
+            </div>
+          </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -103,10 +152,15 @@ export default function SignUpPage() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? <Loader2 className="animate-spin" /> : 'Create Account'}
+                {loading ? <Loader2 className="animate-spin" /> : 'Create Free Account'}
               </Button>
             </form>
           </Form>
+          <div className="mt-4 text-center text-xs text-muted-foreground">
+            <p>✓ No credit card required</p>
+            <p>✓ Free access to legal AI tools</p>
+            <p>✓ Canadian law specialized</p>
+          </div>
         </CardContent>
         <CardFooter className="justify-center text-sm">
             <p className="text-muted-foreground">
