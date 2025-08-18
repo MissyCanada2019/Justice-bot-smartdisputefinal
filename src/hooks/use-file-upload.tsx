@@ -64,16 +64,6 @@ export const useFileUpload = () => {
   }, []);
 
   const uploadFiles = useCallback(async () => {
-    const user = auth.currentUser;
-    if (!user) {
-      toast({
-        title: 'Authentication Required',
-        description: 'Please log in to upload files.',
-        variant: 'destructive'
-      });
-      return;
-    }
-
     const filesToUpload = files.filter(f => !f.uploaded && !f.error);
     if (filesToUpload.length === 0) {
       toast({
@@ -87,6 +77,11 @@ export const useFileUpload = () => {
     
     const uploadPromises = filesToUpload.map(async (fileWrapper) => {
       try {
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+            throw new Error('User session expired. Please log in again.');
+        }
+
         // Simulate progress updates
         const progressInterval = setInterval(() => {
           setFiles(prev => prev.map(f => 
