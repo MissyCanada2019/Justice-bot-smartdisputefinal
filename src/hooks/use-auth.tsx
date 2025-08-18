@@ -34,20 +34,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isFreeTier = process.env.NEXT_PUBLIC_FREE_TIER_ENABLED === 'true';
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
       setLoading(false);
-      
-      if (!loading && user) {
-        const path = window.location.pathname;
-        if (path === '/login' || path === '/signup' || path === '/') {
-            router.push('/dashboard');
-        }
-      }
-
     });
     return () => unsubscribe();
-  }, [loading, router]);
+  }, []);
 
   const signInWithGoogle = async (recaptchaToken: string) => {
     try {

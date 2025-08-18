@@ -19,7 +19,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CharterAnalysisPage() {
   const [documentText, setDocumentText] = useState('');
-  const [result, setResult] = useState<{ sections: Record<string, string> } | null>(null);
+  c
+  onst [result, setResult] = useState<{ sections: Record<string, string> } | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 

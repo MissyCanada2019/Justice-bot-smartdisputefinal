@@ -2,9 +2,33 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-// Enable CORS for Next.js frontend
+// Enhanced CORS configuration for mapped URLs
+const getAllowedOrigins = () => {
+  const webHost = process.env.WEB_HOST;
+  const frontendPort = process.env.FRONTEND_PORT || '3000';
+  
+  const origins = [
+    'http://localhost:3000',
+    'http://localhost:9002',
+  ];
+  
+  if (webHost) {
+    // Add mapped URL origins
+    origins.push(`https://${frontendPort}-${webHost}`);
+    origins.push(`https://9002-${webHost}`);
+    origins.push(`https://${webHost}`);
+  }
+  
+  // Add production URL from environment
+  if (process.env.FRONTEND_URL) {
+    origins.push(process.env.FRONTEND_URL);
+  }
+  
+  return origins;
+};
+
 app.use(cors({
-  origin: ['http://localhost:9002', 'http://localhost:3000'],
+  origin: getAllowedOrigins(),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));

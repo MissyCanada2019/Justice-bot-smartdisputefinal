@@ -1,23 +1,31 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable static export for Firebase Hosting
-  output: 'export',
+  // Enable standalone output for Docker deployment
+  output: 'standalone',
   
-  // Disable image optimization for static export
+  // Environment variables that should be available at build time
+  env: {
+    // Add any build-time environment variables here
+  },
+  
+  // Configure image domains if you're using next/image
   images: {
-    unoptimized: true,
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
+    domains: [
+      'localhost',
+      'justicebotai.firebaseapp.com',
+      'justicebotai.web.app'
     ],
   },
   
-  // Enable trailing slash
-  trailingSlash: true,
+  // Configure redirects if needed
+  async redirects() {
+    return [];
+  },
+  
+  // Configure rewrites if needed
+  async rewrites() {
+    return [];
+  },
 };
 
 module.exports = nextConfig;

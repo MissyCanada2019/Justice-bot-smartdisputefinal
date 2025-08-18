@@ -1,6 +1,30 @@
-// API Service for connecting Next.js frontend to Flask backend
+// API Service for connecting Next.js frontend to backend server
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+// Dynamic API base URL construction for mapped URLs
+const getApiBaseUrl = (): string => {
+  const webHost = process.env.NEXT_PUBLIC_WEB_HOST;
+  const backendPort = process.env.NEXT_PUBLIC_BACKEND_PORT || '5000';
+  
+  // Use direct API_BASE_URL if provided
+  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL;
+  }
+  
+  if (process.env.NODE_ENV === 'development') {
+    return `http://localhost:${backendPort}`;
+  }
+  
+  // Use mapped URL format for deployed environments
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  if (webHost) {
+    return `${protocol}://${backendPort}-${webHost}`;
+  }
+  
+  // Fallback to localhost
+  return `http://localhost:${backendPort}`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 interface ApiResponse<T = any> {
   success: boolean;

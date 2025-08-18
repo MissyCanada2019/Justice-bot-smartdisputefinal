@@ -1,0 +1,11 @@
+<!-- This is a placeholder for the Open Graph image -->
+<!-- You'll need to create an actual 1200x630 image with your JusticeBot.AI branding -->
+<!-- For now, I'll create a simple SVG that can be converted to JPG -->
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#1f2937"/>
+  <text x="600" y="250" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="white" text-anchor="middle">JusticeBot.AI</text>
+  <text x="600" y="350" font-family="Arial, sans-serif" font-size="36" fill="#60a5fa" text-anchor="middle">AI-Powered Legal Assistant</text>
+  <text x="600" y="420" font-family="Arial, sans-serif" font-size="28" fill="#9ca3af" text-anchor="middle">Serving Canadian Legal Needs</text>
+  <circle cx="200" cy="150" r="50" fill="#3b82f6" opacity="0.3"/>
+  <circle cx="1000" cy="500" r="60" fill="#1d4ed8" opacity="0.2"/>
+</svg>
