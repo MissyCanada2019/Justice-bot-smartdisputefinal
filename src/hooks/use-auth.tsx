@@ -1,26 +1,38 @@
 
 'use client';
 
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
-import { onAuthStateChanged, User, GoogleAuthProvider, signInWithPopup, signOut, getAdditionalUserInfo, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  ReactNode,
+} from 'react';
+import {
+  getAuth,
+  onAuthStateChanged,
+  User,
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from 'firebase/auth';
+import { app } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { useToast } from './use-toast';
+
+const auth = getAuth(app);
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   isFreeTier: boolean;
-  signInWithGoogle: (recaptchaToken: string) => Promise<void>;
+  signInWithGoogle: (recaptchaToken?: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-}
-
-declare global {
-    interface Window {
-        grecaptcha: any;
-    }
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,84 +40,70 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const [isFreeTier, setIsFreeTier] = useState(false);
   const { toast } = useToast();
-
-  const isFreeTier = process.env.NEXT_PUBLIC_FREE_TIER_ENABLED === 'true';
+  const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      if (user) {
+        // Check for free tier status (simple example)
+        const creationTime = new Date(user.metadata.creationTime || 0);
+        // Let's say the cut-off is Jan 1, 2026.
+        const cutoffDate = new Date('2026-01-01');
+        setIsFreeTier(creationTime < cutoffDate);
+      } else {
+        setIsFreeTier(false);
+      }
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
-  const signInWithGoogle = async (recaptchaToken: string) => {
-    try {
-      // Only verify recaptcha if token is provided and recaptcha is configured
-      if (recaptchaToken && process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+  const signInWithGoogle = async (recaptchaToken = '') => {
+    const performSignIn = async () => {
+        const provider = new GoogleAuthProvider();
         try {
-          const verificationResponse = await fetch('/api/verify-recaptcha', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              token: recaptchaToken,
-              expectedAction: 'LOGIN'
-            }),
-          });
-          
-          const verification = await verificationResponse.json();
-
-          if (!verification.isValid) {
-            toast({
-                title: 'Security Check Failed',
-                description: `Could not verify you are human. Score: ${verification.score}. Reason: ${verification.reason}`,
-                variant: 'destructive',
-              });
-            return;
-          }
-        } catch (recaptchaError) {
-          console.warn('reCAPTCHA verification failed, proceeding without it:', recaptchaError);
+            const result = await signInWithPopup(auth, provider);
+            // Check if this is a new user
+            if (result.user.metadata.creationTime === result.user.metadata.lastSignInTime) {
+                // New user signed up with Google
+                toast({
+                    title: 'Account Created!',
+                    description: 'Welcome! Redirecting you to the dashboard.',
+                });
+                router.push('/dashboard/welcome');
+            } else {
+                // Existing user logged in
+                toast({
+                    title: 'Login Successful!',
+                    description: 'Welcome back to your dashboard.',
+                });
+                router.push('/dashboard');
+            }
+        } catch (error: any) {
+            handleAuthError(error);
         }
-      }
-
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const additionalUserInfo = getAdditionalUserInfo(result);
-      
-      toast({
-        title: 'Login Successful!',
-        description: 'Welcome to your dashboard.',
-      });
-
-      if (additionalUserInfo?.isNewUser) {
-        // Send welcome email via API route
-        try {
-          await fetch('/api/send-welcome-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: result.user.email!,
-              name: result.user.displayName
-            }),
-          });
-        } catch (error) {
-          console.error('Failed to send welcome email:', error);
-        }
-        router.push('/dashboard/welcome');
-      } else {
-        router.push('/dashboard');
-      }
-    } catch (error: any) {
+    };
+    
+    // reCAPTCHA is disabled for now, just perform sign-in
+    await performSignIn();
+  };
+  
+  const handleAuthError = (error: any) => {
+      console.error("Authentication error:", error);
       if (error.code === 'auth/cancelled-popup-request') {
-        console.log('Sign-in popup closed by user.');
-        return;
+          console.log('Sign-in popup closed by user.');
+          return; // Don't show a toast for this
       }
-      
-      console.error("Error signing in with Google", error);
-
       if (error.code === 'auth/unauthorized-domain') {
+        toast({
+            title: 'Configuration Error',
+            description: 'This domain is not authorized for authentication. Please contact the site owner.',
+            variant: 'destructive',
+        });
         router.push('/troubleshooting');
       } else {
          toast({
@@ -115,7 +113,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
       }
     }
-  };
 
   const signUpWithEmail = async (email: string, password: string) => {
     try {

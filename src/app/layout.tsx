@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: 'JusticeBot.AI | AI-Powered Legal Tools for Canada',
   description:
     'Navigate the Canadian legal system with confidence. AI-powered document analysis, form generation, and case guidance for self-represented litigants.',
-  metadataBase: new URL('https://justicebotai.com'), // Replace with your actual domain
+  metadataBase: new URL('https://justice-bot.com'), // Replace with your actual domain
   openGraph: {
     title: 'JusticeBot.AI',
     description: 'AI-Powered Legal Tools for Canada',

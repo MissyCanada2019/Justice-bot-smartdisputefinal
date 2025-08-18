@@ -13,7 +13,9 @@ const nextConfig = {
     domains: [
       'localhost',
       'justicebotai.firebaseapp.com',
-      'justicebotai.web.app'
+      'justicebotai.web.app',
+      'justice-bot.com',
+      'smartdisputecanada.me',
     ],
   },
   

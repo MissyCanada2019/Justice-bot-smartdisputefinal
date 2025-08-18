@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://justicebotai.com' // Will update when you get your custom domain
+  const baseUrl = 'https://justice-bot.com' // Will update when you get your custom domain
 
   return [
     {
