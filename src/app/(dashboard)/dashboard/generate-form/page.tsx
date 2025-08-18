@@ -47,7 +47,7 @@ export default function GenerateFormPage() {
 
     if (user) {
         setLoadingInitialData(true);
-        getLatestCaseAssessment(user.uid)
+        getLatestCaseAssessment()
             .then(data => {
                 if (data) {
                     setAssessment(data);

@@ -48,12 +48,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       if (user) {
+        console.log("User logged in:", user.uid);
         // Check for free tier status (simple example)
         const creationTime = new Date(user.metadata.creationTime || 0);
         // Let's say the cut-off is Jan 1, 2026.
         const cutoffDate = new Date('2026-01-01');
         setIsFreeTier(creationTime < cutoffDate);
       } else {
+        console.log("No user signed in.");
         setIsFreeTier(false);
       }
       setLoading(false);

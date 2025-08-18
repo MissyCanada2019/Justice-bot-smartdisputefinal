@@ -39,7 +39,7 @@ export default function TimelinePage() {
       }
 
       try {
-        const storedAssessment = await getLatestCaseAssessment(user.uid);
+        const storedAssessment = await getLatestCaseAssessment();
         if (storedAssessment) {
           setAssessment(storedAssessment);
           const response = await fetch('/api/generate-legal-timeline', {

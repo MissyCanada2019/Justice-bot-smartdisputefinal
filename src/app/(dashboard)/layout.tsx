@@ -1,8 +1,7 @@
-
 'use client';
 
-import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar';
 import { DashboardHeader } from '@/components/dashboard/header';
+import { SidebarProvider, Sidebar, SidebarInset, SidebarRail } from '@/components/ui/sidebar';
 import { SidebarNav } from '@/components/dashboard/sidebar-nav';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
@@ -23,7 +22,7 @@ export default function DashboardLayout({
     }
   }, [user, loading, router]);
 
-  if (loading || !user) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -31,19 +30,21 @@ export default function DashboardLayout({
     );
   }
 
+  if (!user) {
+    // This can show briefly before the redirect happens
+    return null;
+  }
+
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen">
+      <SidebarProvider>
         <Sidebar>
-          <SidebarNav />
+            <SidebarRail />
+            <SidebarNav />
         </Sidebar>
-        <div className="flex-1">
-          <DashboardHeader />
-          <SidebarInset>
+        <SidebarInset>
+             <DashboardHeader />
             <main className="p-4 sm:p-6 lg:p-8">{children}</main>
-          </SidebarInset>
-        </div>
-      </div>
+        </SidebarInset>
     </SidebarProvider>
   );
 }

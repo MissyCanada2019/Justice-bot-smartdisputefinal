@@ -151,7 +151,8 @@ export default function SubmitDisputePage() {
 
             const output = await response.json();
 
-            await saveCaseAssessment(user.uid, output, {
+            // The UID is now automatically handled by the service
+            await saveCaseAssessment(output, {
                 caseName: values.caseName,
                 province: values.province,
                 userLocation: values.userLocation,

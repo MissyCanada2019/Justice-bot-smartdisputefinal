@@ -47,14 +47,9 @@ export default function CourtLocatorPage() {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { postalCode: '' },
-  });
-
   useEffect(() => {
     if (user) {
-      getLatestCaseAssessment(user.uid)
+      getLatestCaseAssessment()
         .then(data => {
           if (data) {
             setAssessment(data);

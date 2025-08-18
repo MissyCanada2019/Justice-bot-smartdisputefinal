@@ -51,7 +51,7 @@ export default function LegalJourneyPage() {
 
       try {
         setLoading(true);
-        const assessment = await getLatestCaseAssessment(user.uid);
+        const assessment = await getLatestCaseAssessment();
         
         if (!assessment) {
           toast({

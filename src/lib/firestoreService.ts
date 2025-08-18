@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase';
+import { db, auth } from '@/lib/firebase';
 import { collection, addDoc, query, where, getDocs, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { AssessDisputeMeritOutput } from '@/ai/flows/assess-dispute-merit';
 
@@ -12,7 +12,6 @@ export interface CaseDocument extends AssessDisputeMeritOutput {
 }
 
 export const saveCaseAssessment = async (
-    userId: string,
     assessment: AssessDisputeMeritOutput,
     additionalData?: {
         caseName?: string;
@@ -21,11 +20,16 @@ export const saveCaseAssessment = async (
         userEmail?: string;
     }
 ): Promise<void> => {
+    const user = auth.currentUser;
+    if (!user) {
+        throw new Error("User not authenticated. Cannot save case assessment.");
+    }
+    
     try {
         await addDoc(collection(db, 'cases'), {
             ...assessment,
             ...additionalData,
-            userId,
+            userId: user.uid,
             createdAt: Timestamp.now(),
         });
     } catch (error) {
@@ -34,11 +38,17 @@ export const saveCaseAssessment = async (
     }
 };
 
-export const getLatestCaseAssessment = async (userId: string): Promise<CaseDocument | null> => {
+export const getLatestCaseAssessment = async (): Promise<CaseDocument | null> => {
+    const user = auth.currentUser;
+    if (!user) {
+        console.log("No user is currently authenticated.");
+        return null;
+    }
+
     try {
         const q = query(
             collection(db, 'cases'),
-            where('userId', '==', userId),
+            where('userId', '==', user.uid),
             orderBy('createdAt', 'desc'),
             limit(1)
         );
@@ -51,7 +61,6 @@ export const getLatestCaseAssessment = async (userId: string): Promise<CaseDocum
 
         const latestCaseDoc = querySnapshot.docs[0].data() as CaseDocument;
         
-        // Return the full document, as the AI flow may need all context.
         return latestCaseDoc;
 
     } catch (error) {

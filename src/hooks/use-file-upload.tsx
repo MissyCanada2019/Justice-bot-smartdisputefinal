@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useState, useCallback } from 'react';
 import { uploadFile, createImagePreview, validateFile, UploadResult } from '@/lib/uploadService';
-import { useAuth } from '@/hooks/use-auth';
+import { auth } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 
 export interface FileWithPreview {
@@ -18,7 +19,6 @@ export interface FileWithPreview {
 export const useFileUpload = () => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const { user } = useAuth();
   const { toast } = useToast();
 
   const addFiles = useCallback(async (newFiles: File[]) => {
@@ -64,6 +64,7 @@ export const useFileUpload = () => {
   }, []);
 
   const uploadFiles = useCallback(async () => {
+    const user = auth.currentUser;
     if (!user) {
       toast({
         title: 'Authentication Required',
@@ -78,7 +79,6 @@ export const useFileUpload = () => {
       toast({
         title: 'No Files to Upload',
         description: 'All files have already been uploaded or have errors.',
-        variant: 'destructive'
       });
       return;
     }
@@ -94,7 +94,7 @@ export const useFileUpload = () => {
           ));
         }, 200);
 
-        const result = await uploadFile(fileWrapper.file, user.uid);
+        const result = await uploadFile(fileWrapper.file);
         
         clearInterval(progressInterval);
         
@@ -117,7 +117,7 @@ export const useFileUpload = () => {
     await Promise.all(uploadPromises);
     setIsUploading(false);
     
-    const successCount = files.filter(f => f.uploaded).length;
+    const successCount = files.filter(f => f.uploaded && !f.error).length;
     const errorCount = files.filter(f => f.error).length;
     
     if (successCount > 0) {
@@ -126,23 +126,26 @@ export const useFileUpload = () => {
         description: `${successCount} file(s) uploaded successfully.${errorCount > 0 ? ` ${errorCount} failed.` : ''}`
       });
     }
-  }, [files, user, toast]);
+  }, [files, toast]);
 
   const clearFiles = useCallback(() => {
     setFiles([]);
   }, []);
 
   const retryFailedUploads = useCallback(async () => {
-    const failedFiles = files.filter(f => f.error);
     
     // Reset error state for failed files
     setFiles(prev => prev.map(f => 
-      f.error ? { ...f, error: undefined, progress: 0 } : f
+      f.error ? { ...f, error: undefined, progress: 0, uploaded: false } : f
     ));
     
-    // Retry upload
-    await uploadFiles();
-  }, [files, uploadFiles]);
+    // Retry upload by calling uploadFiles after state has updated
+    // Use a timeout to ensure state update has propagated before re-uploading
+    setTimeout(() => {
+        uploadFiles();
+    }, 100);
+
+  }, [uploadFiles]);
 
   return {
     files,

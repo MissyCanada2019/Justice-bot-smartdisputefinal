@@ -32,7 +32,7 @@ export default function AskJusticeBotPage() {
 
   useEffect(() => {
     if (user) {
-      getLatestCaseAssessment(user.uid)
+      getLatestCaseAssessment()
         .then(data => {
           if (data) {
             setCaseContext(data as CaseDocument);

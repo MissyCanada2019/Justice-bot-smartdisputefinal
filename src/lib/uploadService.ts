@@ -1,5 +1,5 @@
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { app } from '@/lib/firebase';
+import { app, auth } from '@/lib/firebase';
 
 const storage = getStorage(app);
 
@@ -12,12 +12,16 @@ export interface UploadResult {
 
 export const uploadFile = async (
   file: File, 
-  userId: string, 
   folder: 'evidence' | 'documents' = 'evidence'
 ): Promise<UploadResult> => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error('User not authenticated. Cannot upload file.');
+  }
+
   const timestamp = Date.now();
   const fileName = `${timestamp}-${file.name}`;
-  const storageRef = ref(storage, `${folder}/${userId}/${fileName}`);
+  const storageRef = ref(storage, `${folder}/${user.uid}/${fileName}`);
   
   const snapshot = await uploadBytes(storageRef, file);
   const url = await getDownloadURL(snapshot.ref);

@@ -44,7 +44,7 @@ export default function PrecedentFinderPage() {
       }
       
       try {
-        const storedAssessment = await getLatestCaseAssessment(user.uid);
+        const storedAssessment = await getLatestCaseAssessment();
         if (storedAssessment) {
           setAssessment(storedAssessment);
           const response = await fetch('/api/find-precedents', {
