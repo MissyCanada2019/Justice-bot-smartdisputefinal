@@ -6,21 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Gavel, Scale, ShieldCheck } from 'lucide-react';
 import SiteHeader from '@/components/site-header';
-import { useAuth } from '@/hooks/use-auth';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { Icons } from '@/components/icons';
 
 export default function Home() {
-  const { user, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && user) {
-      router.push('/dashboard');
-    }
-  }, [user, loading, router]);
-
   const features = [
     {
       icon: createElement(Gavel, { className: "h-8 w-8 text-primary" }),
