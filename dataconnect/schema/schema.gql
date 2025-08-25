@@ -1,54 +1,80 @@
 type User @table {
   displayName: String!
+  email: String!
   createdAt: Timestamp!
-  email: String
-  province: String
+  province: Province!
+  municipality: Municipality!
+  photoUrl: String
 }
 
-type LegalTopic @table {
+type Province @table {
   name: String!
-  description: String
+  createdAt: Timestamp!
+  generalLegalInformation: String
 }
 
-type LegalGuide @table {
+type Municipality @table {
+  name: String!
+  createdAt: Timestamp!
+  province: Province!
+  localCourtInfo: String
+  legalAidContacts: String
+}
+
+type CourtForm @table {
+  name: String!
+  formIdentifier: String!
+  createdAt: Timestamp!
+  description: String!
+  instructions: String!
+  province: Province
+  municipality: Municipality
+  downloadUrl: String
+  category: String
+}
+
+type LegalMatter @table {
   title: String!
-  content: String!
+  status: String!
   createdAt: Timestamp!
-  provinceSpecific: Boolean
-  updatedAt: Timestamp
-  topic: LegalTopic
-}
-
-type DocumentTemplate @table {
-  name: String!
-  createdAt: Timestamp!
-  description: String
-  content: String
-  updatedAt: Timestamp
-  topic: LegalTopic
-}
-
-type CaseLog @table {
-  caseName: String!
-  createdAt: Timestamp!
-  description: String
-  status: String
-  updatedAt: Timestamp
   user: User!
-  topic: LegalTopic!
-}
-
-type CaseEvent @table {
-  date: Date!
-  eventType: String!
-  createdAt: Timestamp!
+  description: String
   notes: String
-  caseLog: CaseLog!
+  meritScore: Float
 }
 
-type SavedContent @table {
+type Deadline @table {
+  date: Date!
+  description: String!
   createdAt: Timestamp!
-  user: User!
-  legalGuide: LegalGuide
-  documentTemplate: DocumentTemplate
+  legalMatter: LegalMatter!
+  reminderSet: Boolean
+}
+
+type UploadedDocument @table {
+  filename: String!
+  fileUrl: String!
+  uploadedAt: Timestamp!
+  documentType: String!
+  legalMatter: LegalMatter!
+  notes: String
+  meritContribution: Float
+}
+
+type SuggestedPath @table {
+  name: String!
+  description: String!
+  createdAt: Timestamp!
+  legalMatter: LegalMatter!
+  relevanceScore: Float
+}
+
+type SuggestedPathOnLegalMatter @table(key: ["legalMatter", "suggestedPath"]) {
+  legalMatter: LegalMatter!
+  suggestedPath: SuggestedPath!
+}
+
+type SuggestedFormOnLegalMatter @table(key: ["legalMatter", "courtForm"]) {
+  legalMatter: LegalMatter!
+  courtForm: CourtForm!
 }
