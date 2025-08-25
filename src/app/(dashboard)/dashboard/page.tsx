@@ -218,7 +218,12 @@ export default function DashboardPage() {
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold font-headline">My Cases</h1>
+        <div className="space-y-1">
+          <blockquote className="text-lg italic text-muted-foreground">
+            "Every individual is equal before and under the law and has the right to the equal protection and equal benefit of the law without discrimination..."
+          </blockquote>
+           <p className="text-sm font-medium text-foreground">Welcome, {user.displayName || user.email}</p>
+        </div>
         <Button asChild>
             <Link href="/dashboard/submit-dispute">
                 <PlusCircle className="mr-2 h-4 w-4" /> New Case
