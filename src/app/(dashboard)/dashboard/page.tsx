@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 import {
   Card,
@@ -154,5 +155,113 @@ export default function DashboardPage() {
         ))}
       </div>
     </div>
+=======
+'use client';
+
+import { SetStateAction, useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/use-auth';
+import { getUserCases } from '@/lib/firestoreService';
+import AIInsights from '@/components/AIInsights';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { FileText, PlusCircle } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function DashboardPage() {
+  const { user } = useAuth();
+  const [cases, setCases] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user?.uid) {
+      const fetchCases = async () => {
+        try {
+          const casesData = await getUserCases(user.uid);
+          setCases(casesData as SetStateAction<never[]>);
+        } catch (error) {
+          console.error('Error fetching cases:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchCases();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
+  
+  if (!user) {
+    return (
+       <div className="flex items-center justify-center h-[calc(100vh-8rem)]">
+        <p>Please sign in to view your dashboard.</p>
+       </div>
+    );
+  }
+
+  if (loading) {
+    return (
+        <div className="space-y-4">
+            <Skeleton className="h-10 w-1/3" />
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <Skeleton className="h-48" />
+                <Skeleton className="h-48" />
+            </div>
+        </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold font-headline">My Cases</h1>
+        <Button asChild>
+            <Link href="/dashboard/submit-dispute">
+                <PlusCircle className="mr-2 h-4 w-4" /> New Case
+            </Link>
+        </Button>
+      </div>
+
+      {cases.length === 0 ? (
+        <div className="text-center py-20 border-2 border-dashed rounded-lg">
+            <FileText className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-2 text-lg font-medium text-foreground">No cases yet</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Get started by submitting a new dispute.</p>
+            <div className="mt-6">
+                 <Button asChild>
+                    <Link href="/dashboard/submit-dispute">
+                        <PlusCircle className="mr-2 h-4 w-4" /> Submit First Case
+                    </Link>
+                </Button>
+            </div>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {cases.map((c: any) => (
+             <Card key={c.id}>
+                <CardHeader>
+                    <CardTitle className="font-headline">{c.caseName || 'Unnamed Case'}</CardTitle>
+                    <CardDescription>{c.caseClassification}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-sm text-muted-foreground line-clamp-3 h-[60px]">{c.disputeDetails}</p>
+                    <div className="mt-4 pt-4 border-t">
+                        <p className="text-sm">Merit Score: <span className="font-bold">{c.meritScore ?? 'Not assessed'}</span></p>
+                        <p className="text-xs text-muted-foreground">Created: {new Date(c.createdAt).toLocaleDateString()}</p>
+                    </div>
+                     <Button asChild className="w-full mt-4">
+                         <Link href={`/dashboard/case/${c.id}`}>View Case</Link>
+                    </Button>
+                </CardContent>
+             </Card>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-12">
+        <AIInsights userId={user.uid} />
+      </div>
+    </>
+>>>>>>> 6c11440d (ok)
   );
 }
