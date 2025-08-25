@@ -105,7 +105,7 @@ export default function SignUpPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
             <Link href="/" className="flex items-center justify-center gap-2 mb-4">
-                <Icons.justiceBotLogo className="h-10 w-auto" />
+                <Icons.justiceBotLogo className="h-10 w-auto text-primary" />
                 <span className="font-headline text-2xl font-bold text-foreground">JusticeBot.AI</span>
             </Link>
           <CardTitle className="font-headline text-2xl">Join JusticeBot.AI</CardTitle>

@@ -32,7 +32,7 @@ export function UserNav() {
               {user.displayName ? (
                 user.displayName.charAt(0).toUpperCase()
               ) : (
-                <Icons.mapleLeaf className="text-accent" />
+                <Icons.mapleLeaf className="text-primary" />
               )}
             </AvatarFallback>
           </Avatar>

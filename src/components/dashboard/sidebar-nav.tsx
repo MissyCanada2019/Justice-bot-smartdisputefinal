@@ -51,7 +51,7 @@ export function SidebarNav() {
     <>
       <SidebarHeader>
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Icons.justiceBotLogo className="h-8 w-auto" />
+          <Icons.justiceBotLogo className="h-8 w-auto text-primary" />
           <span className="font-headline text-lg font-bold text-sidebar-foreground">
             JusticeBot.AI
           </span>
