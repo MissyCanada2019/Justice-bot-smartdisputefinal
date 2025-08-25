@@ -28,10 +28,18 @@ import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { Icons } from '@/components/icons';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
+<<<<<<< HEAD
   password: z.string().min(4, { message: 'Password must be at least 4 characters.' }),
+=======
+  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  terms: z.boolean().refine(val => val === true, {
+    message: 'You must accept the terms and conditions.',
+  }),
+>>>>>>> 83bc7f63 (1. Landing & Onboarding)
 });
 
 export default function SignUpPage() {
@@ -44,6 +52,7 @@ export default function SignUpPage() {
     defaultValues: {
       email: '',
       password: '',
+      terms: false,
     },
   });
 
@@ -148,6 +157,26 @@ export default function SignUpPage() {
                       <Input type="password" placeholder="••••••••" {...field} disabled={loading} />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="terms"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                         Accept <Link href="/terms-of-use" className="text-primary hover:underline">Terms of Use</Link> & <Link href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>
+                      </FormLabel>
+                      <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 import {
   Card,
@@ -156,6 +157,9 @@ export default function DashboardPage() {
       </div>
     </div>
 =======
+=======
+
+>>>>>>> 83bc7f63 (1. Landing & Onboarding)
 'use client';
 
 import { SetStateAction, useEffect, useState } from 'react';

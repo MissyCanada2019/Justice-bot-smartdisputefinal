@@ -40,6 +40,10 @@ export default function Home() {
               <p className="mt-6 text-lg leading-8 text-foreground/80">
                 Your partner in navigating the complexities of Canadian law. AI-powered insights for everyday people.
               </p>
+               <blockquote className="mt-6 border-l-4 border-primary pl-4 italic text-foreground/70">
+                "Everyone has the right to life, liberty and security of the person and the right not to be deprived thereof except in accordance with the principles of fundamental justice."
+                <cite className="mt-2 block not-italic text-sm text-foreground/50">— Section 7, Canadian Charter of Rights and Freedoms</cite>
+              </blockquote>
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <Button asChild size="lg">
                   <Link href="/signup">Get Started <ArrowRight className="ml-2 h-5 w-5" /></Link>
