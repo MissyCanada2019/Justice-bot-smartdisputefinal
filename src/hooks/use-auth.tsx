@@ -47,6 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
+<<<<<<< HEAD
       if (user) {
         console.log("User logged in:", user.uid);
         // Check for free tier status (simple example)
@@ -54,6 +55,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Let's say the cut-off is Jan 1, 2026.
         const cutoffDate = new Date('2026-01-01');
         setIsFreeTier(creationTime < cutoffDate);
+=======
+      setLoading(false);
+      
+      if (!loading && user) {
+        const path = window.location.pathname;
+        if (path === '/login' || path === '/signup' || path === '/') {
+            router.push('/dashboard');
+        }
+      }
+
+    });
+    return () => unsubscribe();
+  }, [loading, router]);
+
+  const signInWithGoogle = async (recaptchaToken: string) => {
+    try {
+      // Temporarily bypass reCAPTCHA verification
+      // const verification = await verifyRecaptchaToken({ 
+      //   token: recaptchaToken,
+      //   expectedAction: 'LOGIN'
+      // });
+
+      // if (!verification.isValid) {
+      //   toast({
+      //       title: 'Security Check Failed',
+      //       description: `Could not verify you are human. Score: ${verification.score}. Reason: ${verification.reason}`,
+      //       variant: 'destructive',
+      //     });
+      //   return;
+      // }
+
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const additionalUserInfo = getAdditionalUserInfo(result);
+      
+      toast({
+        title: 'Login Successful!',
+        description: 'Welcome to your dashboard.',
+      });
+
+      if (additionalUserInfo?.isNewUser) {
+        router.push('/dashboard/welcome');
+>>>>>>> 5cd2254c (api key is expired so i cant login)
       } else {
         console.log("No user signed in.");
         setIsFreeTier(false);
