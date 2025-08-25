@@ -19,6 +19,8 @@ const metadata: Metadata = {
 declare global {
     interface Window {
         grecaptcha: any;
+        google: any; // For Google Identity Services (GSI)
+        gapi: any; // For Google API Client Library
     }
 }
 
@@ -37,6 +39,10 @@ export default function RootLayout({
           src={`https://www.google.com/recaptcha/enterprise.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
           strategy="lazyOnload"
         />
+        <Script
+          src="https://apis.google.com/js/api.js"
+          strategy="lazyOnload"
+        ></Script>
       </head>
       <body className="font-body antialiased min-h-screen">
         <AuthProvider>

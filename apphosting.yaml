@@ -1,3 +1,4 @@
+
 # Settings for Backend (on Cloud Run).
 # See https://firebase.google.com/docs/app-hosting/configure#cloud-run
 runConfig:
@@ -8,6 +9,7 @@ runConfig:
   # memoryMiB: 512
 
 # Environment variables and secrets.
+<<<<<<< HEAD
 <<<<<<< HEAD
 # See https://firebase.google.com/docs/app-hosting/configure#user-defined-environment
 env:
@@ -102,6 +104,10 @@ env:
       - RUNTIME
 =======
 # env:
+=======
+# See https://firebase.google.com/docs/app-hosting/configure
+env:
+>>>>>>> 1f652f5d (for easy uploading of evidance (pdf jpgs docs) can we have the option to)
   # Configure environment variables.
   # See https://firebase.google.com/docs/app-hosting/configure#user-defined-environment
   # - variable: MESSAGE
@@ -109,7 +115,12 @@ env:
   #   availability:
   #     - BUILD
   #     - RUNTIME
-
+  - variable: NEXT_PUBLIC_GOOGLE_API_KEY
+    # This is a public key, safe to expose.
+    value: "your_google_api_key_here" 
+  - variable: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+    # This is a public client ID, safe to expose.
+    value: "your_google_oauth_client_id_here"
   # Grant access to secrets in Cloud Secret Manager.
   # See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
   # - variable: MY_SECRET

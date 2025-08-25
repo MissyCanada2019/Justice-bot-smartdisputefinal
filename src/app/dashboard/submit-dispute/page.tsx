@@ -13,14 +13,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, UploadCloud } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useGooglePicker } from '@/hooks/use-google-picker';
+import { Icons } from '@/components/icons';
 
 const formSchema = z.object({
   caseName: z.string().min(5, { message: "Case name must be at least 5 characters." }),
   caseClassification: z.string({ required_error: "Please select a case type." }),
   disputeDetails: z.string().min(20, { message: "Please provide at least 20 characters of detail." }),
-  files: z.instanceof(FileList).refine(files => files.length > 0, { message: 'At least one file is required.' }),
+  files: z.custom<FileList | File[]>().refine(files => files && files.length > 0, { message: 'At least one file is required.' }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -37,7 +39,15 @@ export default function SubmitDisputePage() {
       caseName: '',
       caseClassification: '',
       disputeDetails: '',
+      files: [],
     },
+  });
+
+  const { openPicker } = useGooglePicker((files) => {
+    // When files are picked from Google Drive, update the form's file list
+    const currentFiles = Array.from(form.getValues('files') || []);
+    const newFiles = [...currentFiles, ...files];
+    form.setValue('files', newFiles);
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
@@ -52,8 +62,17 @@ export default function SubmitDisputePage() {
     formData.append('caseName', data.caseName);
     formData.append('caseClassification', data.caseClassification);
     formData.append('disputeDetails', data.disputeDetails);
-    for (let i = 0; i < data.files.length; i++) {
-        formData.append('files', data.files[i]);
+    
+    // Handle both FileList and Array<File>
+    const files = data.files;
+    if (files instanceof FileList) {
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files', files[i]);
+        }
+    } else if (Array.isArray(files)) {
+        files.forEach(file => {
+            formData.append('files', file);
+        });
     }
     
     try {
@@ -89,6 +108,8 @@ export default function SubmitDisputePage() {
         setLoading(false);
     }
   };
+
+  const currentFiles = form.watch('files');
 
   return (
     <Card>
@@ -159,16 +180,43 @@ export default function SubmitDisputePage() {
                     <FormItem>
                     <FormLabel>Upload Evidence</FormLabel>
                     <FormControl>
-                        <Input 
-                            type="file" 
-                            multiple
-                            onChange={(e) => field.onChange(e.target.files)}
-                        />
+                      <div className="flex flex-col gap-4 sm:flex-row">
+                        <label className="flex-1 cursor-pointer rounded-md border-2 border-dashed border-input p-4 text-center hover:bg-accent hover:text-accent-foreground">
+                            <UploadCloud className="mx-auto h-8 w-8" />
+                            <span className="mt-2 block text-sm">Click to upload or drag & drop</span>
+                            <Input 
+                                type="file" 
+                                multiple
+                                className="hidden"
+                                onChange={(e) => {
+                                  const currentFiles = Array.from(form.getValues('files') || []);
+                                  const newFiles = Array.from(e.target.files || []);
+                                  form.setValue('files', [...currentFiles, ...newFiles]);
+                                }}
+                            />
+                        </label>
+                        <Button type="button" variant="outline" className="flex-1" onClick={openPicker}>
+                            <Icons.googleDrive className="mr-2 h-6 w-6" />
+                            Upload from Google Drive
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                     </FormItem>
                 )}
             />
+
+            {currentFiles && currentFiles.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium">Selected Files:</h4>
+                <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                  {Array.from(currentFiles).map((file, index) => (
+                    <li key={index}>{file.name}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Submit Dispute
