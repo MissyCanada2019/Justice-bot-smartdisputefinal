@@ -1,0 +1,66 @@
+mutation SeedData @auth(level: USER) {
+  user_insertMany(data: [
+    {
+      displayName: "Bob User",
+      email: "bob@example.com"
+    },
+    {
+      displayName: "Alice User",
+      email: "alice@example.com"
+    }
+  ])
+  dispute_insertMany(data: [
+    {
+      title: "Sample Dispute 1",
+      description: "This is a sample dispute.",
+      userId_expr: "uuidV4()"
+    },
+    {
+      title: "Sample Dispute 2",
+      description: "This is another sample dispute.",
+      userId_expr: "uuidV4()"
+    }
+  ])
+  guidanceStep_insertMany(data: [
+    {
+      instruction: "Follow step 1",
+      disputeId_expr: "uuidV4()",
+      stepNumber: 1
+    },
+    {
+      instruction: "Follow step 2",
+      disputeId_expr: "uuidV4()",
+      stepNumber: 2
+    }
+  ])
+  legalForm_insertMany(data: [
+    {
+      formName: "Form A",
+      formType: "Type A",
+      generatedContent: "Generated content for Form A",
+      disputeId_expr: "uuidV4()"
+    },
+    {
+      formName: "Form B",
+      formType: "Type B",
+      generatedContent: "Generated content for Form B",
+      disputeId_expr: "uuidV4()"
+    }
+  ])
+  assessment_insertMany(data: [
+    {
+      assessmentText: "Assessment 1",
+      confidenceLevel: "High",
+      recommendations: "Recommendation 1",
+      strengthScore: 0.8,
+      disputeId_expr: "uuidV4()"
+    },
+    {
+      assessmentText: "Assessment 2",
+      confidenceLevel: "Medium",
+      recommendations: "Recommendation 2",
+      strengthScore: 0.5,
+      disputeId_expr: "uuidV4()"
+    }
+  ])
+}

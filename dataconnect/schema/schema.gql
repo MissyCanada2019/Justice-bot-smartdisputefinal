@@ -1,80 +1,46 @@
 type User @table {
   displayName: String!
-  email: String!
   createdAt: Timestamp!
-  province: Province!
-  municipality: Municipality!
+  email: String
   photoUrl: String
 }
 
-type Province @table {
-  name: String!
-  createdAt: Timestamp!
-  generalLegalInformation: String
-}
-
-type Municipality @table {
-  name: String!
-  createdAt: Timestamp!
-  province: Province!
-  localCourtInfo: String
-  legalAidContacts: String
-}
-
-type CourtForm @table {
-  name: String!
-  formIdentifier: String!
-  createdAt: Timestamp!
-  description: String!
-  instructions: String!
-  province: Province
-  municipality: Municipality
-  downloadUrl: String
-  category: String
-}
-
-type LegalMatter @table {
-  title: String!
-  status: String!
-  createdAt: Timestamp!
+type Dispute @table {
   user: User!
-  description: String
-  notes: String
-  meritScore: Float
-}
-
-type Deadline @table {
-  date: Date!
+  title: String!
   description: String!
   createdAt: Timestamp!
-  legalMatter: LegalMatter!
-  reminderSet: Boolean
+  updatedAt: Timestamp!
+  caseStrengthScore: Float
+  status: String
 }
 
-type UploadedDocument @table {
-  filename: String!
-  fileUrl: String!
-  uploadedAt: Timestamp!
-  documentType: String!
-  legalMatter: LegalMatter!
-  notes: String
-  meritContribution: Float
-}
-
-type SuggestedPath @table {
-  name: String!
-  description: String!
+type Assessment @table {
+  dispute: Dispute!
+  assessmentText: String!
+  strengthScore: Float!
   createdAt: Timestamp!
-  legalMatter: LegalMatter!
-  relevanceScore: Float
+  confidenceLevel: String
+  recommendations: String
 }
 
-type SuggestedPathOnLegalMatter @table(key: ["legalMatter", "suggestedPath"]) {
-  legalMatter: LegalMatter!
-  suggestedPath: SuggestedPath!
+type LegalForm @table {
+  dispute: Dispute!
+  formName: String!
+  formType: String!
+  generatedContent: String!
+  createdAt: Timestamp!
+  explanation: String
+  filingInstructions: String
+  formStatus: String
 }
 
-type SuggestedFormOnLegalMatter @table(key: ["legalMatter", "courtForm"]) {
-  legalMatter: LegalMatter!
-  courtForm: CourtForm!
+type GuidanceStep @table {
+  dispute: Dispute!
+  stepNumber: Int!
+  instruction: String!
+  createdAt: Timestamp!
+  isComplete: Boolean
+  relatedForm: String
+  links: String
 }

@@ -1,0 +1,32 @@
+mutation CreateDispute @auth(level: USER) {
+  dispute_insert(data: {
+    title: "My Dispute",
+    description: "A description of my dispute",
+    userId_expr: "auth.uid",
+    createdAt_expr: "request.time",
+    updatedAt_expr: "request.time"
+  })
+}
+
+query ListMyDisputes @auth(level: USER) {
+  disputes(where: {userId: {eq_expr: "auth.uid"}}) {
+    id
+    title
+    description
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdateGuidanceStep($id: UUID!, $isComplete: Boolean!) @auth(level: USER) {
+  guidanceStep_update(key: {id: $id}, data: {isComplete: $isComplete})
+}
+
+query ListGuidanceStepsForDispute($disputeId: UUID!) @auth(level: USER) {
+  guidanceSteps(where: {disputeId: {eq: $disputeId}}) {
+    id
+    instruction
+    isComplete
+    stepNumber
+  }
+}

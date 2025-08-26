@@ -15,14 +15,8 @@ This guide provides the final steps to deploy your JusticeBot.AI application and
     ```bash
     npm install
     ```
-3.  **Set Up Environment Variables:** Create a file named `.env.local` in the root of your project. Copy the content from your `apphosting.yaml` file's `env` section into it, replacing the placeholder values with your actual Firebase project credentials. You can find these in your Firebase project settings.
+3.  **Set Up Environment Variables:** Open the `.env` file in the root of your project. Replace the placeholder values (e.g., `your_firebase_api_key_here`) with your actual Firebase project credentials. You can find these in your Firebase project settings. This step is **critical** for the app to run locally.
 
-    Your `.env.local` should look like this:
-    ```
-    NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-    # ... and so on for all variables
-    ```
 
 ## Step 2: Initialize Firebase
 

@@ -19,6 +19,7 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@dataconnect/generated": "file:dataconnect-generated/js/example-connector",
     "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
     "@genkit-ai/firebase": "^1.15.1",
     "@genkit-ai/googleai": "^1.13.0",

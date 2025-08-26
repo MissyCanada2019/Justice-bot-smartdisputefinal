@@ -1,0 +1,20 @@
+query ListCases @auth(level: USER) {
+  cases {
+    id
+    title
+    description
+    status
+  }
+}
+
+mutation CreateCase($title: String!, $description: String!, $status: String!, $type: String!) @auth(level: USER) {
+  case_insert(data: {title: $title, description: $description, status: $status, type: $type})
+}
+
+mutation UpdateCase($id: UUID!, $title: String, $description: String, $status: String) @auth(level: USER) {
+  case_update(id: $id, data: {title: $title, description: $description, status: $status})
+}
+
+mutation DeleteCase($id: UUID!) @auth(level: USER) {
+  case_delete(id: $id)
+}
