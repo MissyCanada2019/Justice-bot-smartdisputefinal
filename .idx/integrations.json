@@ -8,3 +8,6 @@
   "github": {
     "test": "test"
   }
+
+impimport '../src/app/globals.css';
+ort './globals.css';
