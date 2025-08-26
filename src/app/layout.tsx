@@ -1,5 +1,7 @@
 
-import type { Metadata, Viewport } from 'next';
+'use client';
+
+import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -8,6 +10,7 @@ import FloatingLeaves from '@/components/floating-leaves';
 
 const inter = Inter({ subsets: ['latin'] });
 
+// This metadata is illustrative; for a real app, you'd manage this carefully.
 export const metadata: Metadata = {
   title: 'JusticeBot.AI | AI-Powered Legal Tools for Canada',
   description:
@@ -38,12 +41,11 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = {
-  themeColor: '#D8282D',
-  initialScale: 1,
-  width: 'device-width',
-  colorScheme: 'dark light',
-};
+declare global {
+    interface Window {
+        grecaptcha: any;
+    }
+}
 
 export default function RootLayout({
   children,
