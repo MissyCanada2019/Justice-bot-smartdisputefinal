@@ -32,14 +32,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
-<<<<<<< HEAD
-  password: z.string().min(4, { message: 'Password must be at least 4 characters.' }),
-=======
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
   terms: z.boolean().refine(val => val === true, {
     message: 'You must accept the terms and conditions.',
   }),
->>>>>>> 83bc7f63 (1. Landing & Onboarding)
 });
 
 export default function SignUpPage() {
