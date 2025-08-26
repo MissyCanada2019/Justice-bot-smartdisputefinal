@@ -1,12 +1,7 @@
-
+{
   "firebase_hosting": {
     "deploymentHostingUrl": "https://justicebotai.web.app"
   },
   "gemini_api": {},
   "secrets_manager": {}
 }
-
-
-impimport '../src/app/globals.css';
-}
-ort './globals.css';
