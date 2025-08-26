@@ -2,7 +2,7 @@
 'use client';
 
 import type { Metadata } from 'next';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from "@/components/ui/toaster";
 import FloatingLeaves from '@/components/floating-leaves';
 import '../src/app/globals.css';
 import { AuthProvider } from '@/hooks/use-auth';
@@ -48,3 +48,4 @@ export default function RootLayout({
     </html>
   );
 }
+

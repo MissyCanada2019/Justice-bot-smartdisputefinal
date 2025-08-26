@@ -5,9 +5,8 @@
   "gemini_api": {},
   "secrets_manager": {}
 }
-  "github": {
-    "test": "test"
-  }
+
 
 impimport '../src/app/globals.css';
+}
 ort './globals.css';
