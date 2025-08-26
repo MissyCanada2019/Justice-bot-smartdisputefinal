@@ -3,6 +3,7 @@
 
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/hooks/use-auth';
@@ -11,7 +12,7 @@ import FloatingLeaves from '@/components/floating-leaves';
 const inter = Inter({ subsets: ['latin'] });
 
 // This metadata is illustrative; for a real app, you'd manage this carefully.
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: 'JusticeBot.AI | AI-Powered Legal Tools for Canada',
   description:
     'Navigate the Canadian legal system with confidence. AI-powered document analysis, form generation, and case guidance for self-represented litigants.',
@@ -58,7 +59,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
-        <script src={`https://www.google.com/recaptcha/enterprise.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`} async defer></script>
+        <Script
+          src={`https://www.google.com/recaptcha/enterprise.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
+          strategy="lazyOnload"
+        />
       </head>
       <body className={`${inter.className} font-body bg-background text-foreground`}>
         <AuthProvider>
