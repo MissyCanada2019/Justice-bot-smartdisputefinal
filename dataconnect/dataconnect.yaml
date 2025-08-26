@@ -1,12 +1,12 @@
 specVersion: "v1"
-serviceId: "justice-bot-final-service"
+serviceId: "studio"
 location: "northamerica-northeast2"
 schema:
   source: "./schema"
   datasource:
     postgresql:
-      database: "justice-bot-final-database"
+      database: "fdcdb"
       cloudSql:
         instanceId: "justice-bot-final-instance"
       # schemaValidation: "COMPATIBLE"
-connectorDirs: ["./connector"]
+connectorDirs: ["./example"]

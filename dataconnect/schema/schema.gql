@@ -1,50 +1,46 @@
 type User @table {
-  email: String!
-  displayName: String
-  phone: String
-  role: String! # Enum: end_user, staff, admin
-  createdAt: Timestamp
+  displayName: String!
+  createdAt: Timestamp!
+  email: String
+  photoUrl: String
 }
 
-type Case @table {
+type Dispute @table {
+  user: User!
   title: String!
-  type: String! # Enum: chargeback, landlord_tenant, small_claim, other
-  status: String! # Enum: draft, open, submitted, in_review, resolved, closed
-  province: String
-  description: String
-  referenceNo: String
-  createdAt: Timestamp
-  updatedAt: Timestamp
-  owner: User
+  description: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  caseStrengthScore: Float
+  status: String
 }
 
-type Evidence @table {
-  kind: String! # Enum: image, pdf, audio, video, text, other
-  fileUri: String!
-  mimeType: String!
-  sizeBytes: Int!
-  textContent: String
-  hash: String
-  createdAt: Timestamp
-  case: Case
-  uploadedBy: User
+type Assessment @table {
+  dispute: Dispute!
+  assessmentText: String!
+  strengthScore: Float!
+  createdAt: Timestamp!
+  confidenceLevel: String
+  recommendations: String
 }
 
-type FormDefinition @table {
-  slug: String!
-  title: String!
-  version: Int!
-  schemaJson: String! # Representing JSON as String
-  active: Boolean!
-  createdAt: Timestamp
+type LegalForm @table {
+  dispute: Dispute!
+  formName: String!
+  formType: String!
+  generatedContent: String!
+  createdAt: Timestamp!
+  explanation: String
+  filingInstructions: String
+  formStatus: String
 }
 
-type FormSubmission @table {
-  answersJson: String! # Representing JSON as String
-  status: String! # Enum: in_progress, submitted, locked
-  createdAt: Timestamp
-  submittedAt: Timestamp
-  case: Case
-  form: FormDefinition
-  submittedBy: User
+type GuidanceStep @table {
+  dispute: Dispute!
+  stepNumber: Int!
+  instruction: String!
+  createdAt: Timestamp!
+  isComplete: Boolean
+  relatedForm: String
+  links: String
 }
