@@ -1,95 +1,60 @@
-# JusticeBot.AI on Firebase Studio
+# JusticeBot.AI - Deployment Guide
 
-This is your project for JusticeBot.AI, built with Next.js and ready for deployment on Firebase.
+This guide provides the final steps to deploy your JusticeBot.AI application and connect your custom domain.
 
-## Local Development & Deployment
+## Prerequisites
 
-To run and deploy this project from your local machine, follow these steps.
+*   You have a [Firebase](https://firebase.google.com/) account.
+*   You have [Node.js](https://nodejs.org/) installed on your computer (version 20 or later is recommended).
+*   You have the [Firebase CLI](https://firebase.google.com/docs/cli#install-cli-npm) installed.
 
-### Prerequisites
+## Step 1: Set Up Your Local Environment
 
-*   You have an account with [Firebase](https://firebase.google.com/).
-*   [Node.js](https://nodejs.org/) (version 20 or later recommended).
-*   [Firebase CLI](https://firebase.google.com/docs/cli#install-cli-npm) installed on your machine.
+1.  **Copy Files:** Create a folder on your computer and copy all the project files from Firebase Studio into it.
+2.  **Install Dependencies:** Open your terminal, navigate into your new project folder, and run:
+    ```bash
+    npm install
+    ```
+3.  **Set Up Environment Variables:** Create a file named `.env.local` in the root of your project. Copy the content from your `apphosting.yaml` file's `env` section into it, replacing the placeholder values with your actual Firebase project credentials. You can find these in your Firebase project settings.
 
-### Step 1: Get the Project Files
+    Your `.env.local` should look like this:
+    ```
+    NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+    # ... and so on for all variables
+    ```
 
-Create a new directory on your local machine and copy all the project files from Firebase Studio into it.
+## Step 2: Initialize Firebase
 
-### Step 2: Install Dependencies
+This connects your local folder to your Firebase project.
 
-Once you have the project files on your local machine, navigate to the project directory in your terminal and install the necessary dependencies.
-
-```bash
-npm install
-```
-
-### Step 3: Set Up Environment Variables
-
-Your project requires Firebase configuration to run locally. Create a new file named `.env.local` in the root of your project directory and add the following lines.
-
-These values can be found in your `apphosting.yaml` file.
-
-```
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-```
-
-### Step 4: Run the Local Development Server
-
-Start the Next.js development server to see your application running locally.
-
-```bash
-npm run dev
-```
-
-Your app should now be running at `http://localhost:9002`. You will need to add `localhost` to your list of "Authorized domains" in the Firebase Authentication settings to sign in locally.
-
-### Step 5: Initialize Firebase in Your Project
-
-This is a crucial step to connect your local project folder to your Firebase project.
-
-1.  **Log in to Firebase:**
+1.  **Log In to Firebase:**
     ```bash
     firebase login
     ```
-
 2.  **Initialize Firebase:**
-    Run the following command from your project's root directory:
     ```bash
     firebase init
     ```
+3.  **Follow the Prompts:**
+    *   Select **App Hosting**.
+    *   Choose **Use an existing project** and select your `justicebotai` project.
+    *   Provide the backend ID when prompted (you can find this in the App Hosting section of the Firebase Console).
 
-3.  **Follow the prompts:**
-    *   When asked "Which Firebase features do you want to set up?", use the arrow keys to navigate to **App Hosting** and press the spacebar to select it, then press Enter.
-    *   When asked to select a project, choose **Use an existing project** and select `justicebotai` from the list.
-    *   When asked for your backend ID, you can find this in the Firebase Console under App Hosting. It will likely be named something like `justicebotai`.
-    *   It will ask about deploying with `npm run build`. You can accept the default.
+## Step 3: Deploy Your Application
 
-This will create a `.firebaserc` file in your project, officially linking it to Firebase.
-
-### Step 6: Deploy to App Hosting
-
-Now that your project is initialized, you can deploy it directly from your local machine.
+Now you can deploy the application to Firebase.
 
 ```bash
 firebase apphosting:deploy
 ```
 
-The CLI will build your Next.js application and deploy it. Once finished, it will provide you with the URL to your live application.
+The CLI will build and deploy your app. When it's finished, it will give you a URL where you can see your live application.
 
-## Connecting a Custom Domain
+## Step 4: Connect Your Custom Domain (`justice-bot.com`)
 
-To connect `justice-bot.com` to your live application:
-
-1.  After deploying, go to the **App Hosting** section of your Firebase Console.
-2.  Find your newly deployed app and click **"Add custom domain"**.
-3.  Follow the on-screen instructions to add your domain.
-4.  Firebase will provide DNS records (an **`A` record** and possibly a **`TXT` record** for verification) to add to your domain registrar (the company where you bought the domain).
-5.  **Important:** Log in to your domain registrar's website and add these records exactly as Firebase shows them.
-6.  Once you've added the records, you must wait. It can take up to 48 hours for DNS changes to fully propagate across the internet. After a few hours, you can return to the Firebase console to see if the domain has been verified.
-7.  Once verified, Firebase will automatically set up a free SSL certificate, and your site will be live at your custom domain.
+1.  **Go to App Hosting in Firebase:** Open the App Hosting section of your Firebase Console.
+2.  **Add Custom Domain:** Find your new deployment and click **"Add custom domain"**.
+3.  **Enter Your Domain:** Type in `www.justice-bot.com`. Firebase will also guide you on setting up the root domain (`justice-bot.com`).
+4.  **Update DNS Records:** Firebase will provide you with DNS records (typically `A` records). Log in to your domain registrar (where you bought `justice-bot.com`) and add these records.
+5.  **Wait for Propagation:** DNS changes can take a few hours to update across the internet. Once verified, Firebase will automatically provision an SSL certificate, and your site will be live at `https://www.justice-bot.com`.
