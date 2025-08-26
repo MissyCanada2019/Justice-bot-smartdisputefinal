@@ -203,6 +203,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
          console.error("Error signing in with email", error);
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
              throw new Error('Invalid email or password. Please try again.');
+        } else if (error.code === 'auth/auth-domain-config-required') {
+            router.push('/troubleshooting');
+            return;
         }
         throw new Error(error.message || 'An unexpected error occurred during login.');
     }
