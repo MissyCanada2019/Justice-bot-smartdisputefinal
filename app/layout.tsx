@@ -4,7 +4,7 @@
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import FloatingLeaves from '@/components/floating-leaves';
-import './globals.css';
+import '../src/app/globals.css';
 import { AuthProvider } from '@/hooks/use-auth';
 import Script from 'next/script';
 
