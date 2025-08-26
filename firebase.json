@@ -56,8 +56,8 @@
     "source": "dataconnect"
   },
   "firestore": {
-    "database": "(default)",
-    "location": "nam5",
+    "database": "justicebot",
+    "location": "northamerica-northeast2",
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
@@ -99,11 +99,45 @@
         "npm --prefix \"$RESOURCE_DIR\" run lint",
         "npm --prefix \"$RESOURCE_DIR\" run build"
       ]
+    },
+    {
+      "source": "fuctions_justicebot_final",
+      "codebase": "fuctions_justicebot_final",
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    },
+    {
+      "source": "fuctions_bot_base",
+      "codebase": "fuctions_bot_base",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
     }
   ],
   "apphosting": [
     {
       "backendId": "justice-bot-canada-firebase",
+      "rootDir": "/",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "functions"
+      ]
+    },
+    {
+      "backendId": "studio",
       "rootDir": "/",
       "ignore": [
         "node_modules",
